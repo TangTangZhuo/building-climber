@@ -41,6 +41,7 @@ public class ChangeRopeLength : MonoBehaviour {
 		
 		//初始化绳子长度
 		ResetRope ();
+
 		//完成初始化可进行投掷
 		if (!resetRope) {
 			//按下space进入准备投掷和绳子伸缩阶段
@@ -48,19 +49,20 @@ public class ChangeRopeLength : MonoBehaviour {
 				animator.SetBool ("Ready", true);
 			} else if (Input.GetKeyUp (KeyCode.Space)) {
 				animator.SetBool ("Ready", false);
-				SetStiffness (5);
+				SetStiffness (10);
 			}			
 			AnimatorStateInfo animatorInfo = animator.GetCurrentAnimatorStateInfo (1);
 			if (animatorInfo.IsName ("GoHook")) {
 				float duTime = animatorInfo.normalizedTime - (int)animatorInfo.normalizedTime;
-				float boneLength = (bones [1].position - bones [0].position).magnitude;
+				Vector3 boneV3 = bones [1].position - bones [0].position;
+				float boneLength = boneV3.magnitude;
 				//手下摆时伸长，上摆时缩短
 				if (duTime <= 0.5f) {				
 					if (boneLength < 1.5f) {
 						ChangeLength (false, 0.95f);
 					}
 				} else {				
-					if (boneLength > 0.01f) {
+					if (boneLength > 0.1f) {
 						ChangeLength (true, 0.95f);
 					}
 				}
@@ -70,8 +72,9 @@ public class ChangeRopeLength : MonoBehaviour {
 
 	void ResetRope(){
 		if (resetRope) {
-			float boneLength = (bones [1].position - bones [0].position).magnitude;
-			if (boneLength < 0.2f) {
+			Vector3 boneV3 = bones [1].position - bones [0].position;
+			float boneLength = boneV3.magnitude;
+			if (boneLength < 0.1f) {
 				resetRope = false;
 				return;
 			}

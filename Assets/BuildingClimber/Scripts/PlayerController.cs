@@ -67,4 +67,12 @@ public class PlayerController : MonoBehaviour {
 		}
 		return pointsArray;
 	}
+
+	void OnTriggerEnter2D(Collider2D col){
+//		print (1);
+//		if (col.tag == "RogueWall"||col.name == "thorns") {
+//			animator.SetTrigger ("TriggerDeath");
+//		}
+
+	}
 }

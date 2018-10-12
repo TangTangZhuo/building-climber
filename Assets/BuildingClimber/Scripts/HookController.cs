@@ -8,6 +8,7 @@ public class HookController : MonoBehaviour {
 	ChangeRopeLength rope;
 
 	bool jumpfinish = true;
+
 	// Use this for initialization
 	void Start () {
 		player = PlayerController.Instance;
@@ -26,14 +27,26 @@ public class HookController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D col){
+		
 		if (jumpfinish) {
 			jumpfinish = false;
-			if (col.tag == "normalWall") {
+			if (col.tag == "normalWall" || col.tag == "RogueWall" || col.name == "thorns") {
+				
 				animator.SetTrigger ("TriggerWall");
 				rope.SetStiffness (0);
-				player.PlayerJump (1, transform.position.y - player.transform.position.y);
-			}
+
+				player.PlayerJump (5, transform.position.y - player.transform.position.y);
+			}				
 		}
+		//if (jumpfinish) {
+
+//			if (col.tag == "windowWall") {
+//			//	if (!animator.GetCurrentAnimatorStateInfo (1).IsName ("Jump")) {
+//					animator.SetTrigger ("TriggerWindowOrEagle");
+//					rope.resetRope = true;
+//			//	}
+//			}
+		//}
 	}
 		
 }
