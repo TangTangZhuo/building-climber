@@ -5,7 +5,6 @@ using UnityEngine;
 public class RopeSriptes : MonoBehaviour {
 	public Vector2 destiny;
 	public float speed = 1;
-//	public float keepSpeed = 2;
 
 	public float distance = 2;
 
@@ -16,24 +15,27 @@ public class RopeSriptes : MonoBehaviour {
 	public GameObject lastNode;
 
 
-	int vertexCount = 2;
+	public int vertexCount = 2;
 
 	public List<GameObject> nodes = new List<GameObject> ();
 
 	bool done = false;
-	LineRenderer lr;
-	Transform nodesTrans;
-	// Use this for initialization
+	[HideInInspector]
+	public LineRenderer lr;
+
+
+	public ThrowHook throwHook;
+
 	void Start () {
 		lr = GetComponent<LineRenderer> ();
 
 		player = GameObject.FindGameObjectWithTag ("Player");
+		throwHook = player.GetComponent<ThrowHook> ();
 		lastNode = transform.gameObject;
 		nodes.Add (transform.gameObject);
-		nodesTrans = new GameObject ("Nodes").transform;
 	}
 	
-	// Update is called once per frame
+
 	void Update () {
 		if (!done) {
 			transform.position = Vector2.MoveTowards (transform.position, destiny, speed);
@@ -47,34 +49,26 @@ public class RopeSriptes : MonoBehaviour {
 				while (Vector2.Distance (player.transform.position, lastNode.transform.position) > distance) {
 					CreatNode ();
 				}
-				lastNode.GetComponent<HingeJoint2D> ().connectedBody = player.GetComponent<Rigidbody2D> ();
-				int childCount = transform.childCount;
-				for (int i = 0; i < childCount; i++) {
-					Transform child = transform.GetChild (0);
-					child.GetComponent<HingeJoint2D> ().autoConfigureConnectedAnchor = false;
-					child.SetParent (nodesTrans);
-				}
-				transform.GetComponent<HingeJoint2D> ().autoConfigureConnectedAnchor = false;
+				HingeJoint2D joint = lastNode.GetComponent<HingeJoint2D> ();
+				if (joint)
+					joint.connectedBody = player.GetComponent<Rigidbody2D> ();
+				GetComponent<DistanceJoint2D> ().connectedBody = player.GetComponent<Rigidbody2D> ();
 			}
 		}
-		RenderLine ();
-
-		//KeepDistance (nodes);
-	}
-
-	void KeepDistance(List<GameObject> nodeObj){
-		for (int i = 0; i < nodeObj.Count-1; i++) {
-			if (Vector3.Distance (nodeObj [i].transform.position, nodeObj [i+1].transform.position)>distance) {
-				nodeObj [i + 1].transform.position = Vector3.Lerp (nodeObj [i + 1].transform.position, nodeObj [i].transform.position,   Time.deltaTime);
-			}
+		if (throwHook.gameState != GameState.isInSky) {
+			RenderLine ();
 		}
-		//print (Vector3.Distance (nodeObj [0].transform.position, nodeObj [1].transform.position));
+		if (throwHook.gameState == GameState.isInSky) {
+			
+		}
 	}
+
+
 
 	void RenderLine(){
 		lr.positionCount = vertexCount;
 		int i ;
-		for (i = 0; i < nodes.Count; i++) {
+		for (i = 0; i < vertexCount-1; i++) {
 			lr.SetPosition (i, nodes [i].transform.position);
 		}
 		lr.SetPosition (i, player.transform.position);
@@ -90,7 +84,14 @@ public class RopeSriptes : MonoBehaviour {
 
 		go.transform.SetParent (transform);
 
-		lastNode.GetComponent<HingeJoint2D> ().connectedBody = go.GetComponent<Rigidbody2D> ();
+		if (vertexCount == 2) {
+			go.AddComponent<HingeJoint2D> ();
+			HingeJoint2D[] joints = go.GetComponents<HingeJoint2D> ();
+			joints [1].connectedBody = lastNode.GetComponent<Rigidbody2D> ();
+		} else {
+			HingeJoint2D joint = lastNode.GetComponent<HingeJoint2D> ();
+			joint.connectedBody = go.GetComponent<Rigidbody2D> ();
+		}
 
 		lastNode = go;
 

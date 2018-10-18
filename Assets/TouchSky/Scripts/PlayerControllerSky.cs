@@ -1,22 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerControllerSky : MonoBehaviour {
-	public float swingForce = 500;
-	public Transform rocket;
-	Rigidbody2D rig2d;
+
 	// Use this for initialization
 	void Start () {
-		rig2d = GetComponent<Rigidbody2D> ();
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.A)) {
-			rig2d.AddForce (swingForce * Vector2.left);
-		} else if (Input.GetKeyDown (KeyCode.D)) {
-			rig2d.AddForce (swingForce * Vector2.right);
+		
+	}
+
+	void OnTriggerEnter2D(Collider2D coll){
+		if (coll.tag == "deadline") {
+			Time.timeScale = 0.2f;
+			Invoke ("GameOver", 0.2f);
 		}
+	}
+
+	public void GameOver(){
+		Time.timeScale = 1f;
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 	}
 }
