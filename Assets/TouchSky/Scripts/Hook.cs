@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Hook : MonoBehaviour {
 	Rigidbody2D hookRig2D;
@@ -21,6 +22,7 @@ public class Hook : MonoBehaviour {
 		
 		if (m_TargetJoint) {
 			m_TargetJoint.target = target.position;
+			target.position = transform.position;
 		}
 	}
 
@@ -30,14 +32,16 @@ public class Hook : MonoBehaviour {
 			if (coll.transform.parent != null) {
 				obj = coll.transform.parent;
 			}
-			if (obj.name == "RocketCollider") {
+			if (obj && obj.name == "RocketCollider") {
 				if (m_TargetJoint)
 					return;
 				ropeScritpes.player.GetComponent<ThrowHook> ().gameState = GameState.isHooking;
 				target = obj.parent;
-				target.GetComponent<FlyController> ().speed = 3;
+				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
+				target.GetComponent<FlyController> ().speed = 50;
+				coll.tag = "curRocket";
 				ropeScritpes.throwHook.hookTarget = target;
-				//target.position = transform.position;
+				target.position = transform.position;
 				m_TargetJoint = gameObject.AddComponent<TargetJoint2D>();
 				m_TargetJoint.anchor = m_TargetJoint.transform.InverseTransformPoint (transform.position);
 			}

@@ -54,15 +54,15 @@ public class DragTarget : MonoBehaviour
 		}
 		else if (Input.GetMouseButtonUp (0))
 		{
-//			Destroy (m_TargetJoint);
-//			m_TargetJoint = null;
-//			return;
+			Destroy (m_TargetJoint);
+			m_TargetJoint = null;
+			return;
 		}
 
 		// Update the joint target.
 		if (m_TargetJoint)
 		{
-			//m_TargetJoint.target = worldPos;
+			m_TargetJoint.target = worldPos;
 			//m_TargetJoint.target = GameObject.Find("rocket").transform.position;
 			// Draw the line between the target and the joint anchor.
 			if (m_DrawDragLine)

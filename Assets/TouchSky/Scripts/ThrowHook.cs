@@ -24,10 +24,12 @@ public class ThrowHook : MonoBehaviour {
 	public Transform hookTarget;
 	public GameObject drawCircle;
 	GameObject drawCircleObj;
-	public float hookTargerSpeed = 10;
+	public float hookTargerSpeed = 100;
 
 	[HideInInspector]
 	public float radius = 1;
+	[HideInInspector]
+	public float radiusChange = 0.1f;
 
 	public GameState gameState = GameState.isInSky;
 	public float endPower = 1000;
@@ -41,7 +43,8 @@ public class ThrowHook : MonoBehaviour {
 
 	void Start () {
 		//curRocket = null;
-
+		radius = 3;
+		radiusChange = 0.1f;
 	}
 		
 
@@ -67,7 +70,6 @@ public class ThrowHook : MonoBehaviour {
 				}
 			}
 			if (gameState == GameState.isHooking)
-		//if (Input.GetKeyUp (KeyCode.A)) {
 		if (Input.GetMouseButtonUp (0)) {
 				gameState = GameState.isTakeBacking;
 				hookTarget.DORotate (new Vector3 (0, 0, 0), 0.2f, RotateMode.Fast);
@@ -78,10 +80,10 @@ public class ThrowHook : MonoBehaviour {
 					if (hookTarget) {
 						float mouseDetal = mousePos.x - Camera.main.ScreenToViewportPoint (Input.mousePosition).x;
 
-						if (mouseDetal > 0.001f) {
+						if (mouseDetal > 0.002f) {
 							hookTarget.position += Vector3.left * hookTargerSpeed * Time.deltaTime;
 							hookTarget.DORotate (new Vector3 (0, 0, 30), 0.2f, RotateMode.Fast);
-						} else if (mouseDetal < -0.001f) {
+						} else if (mouseDetal < -0.002f) {
 							hookTarget.position -= Vector3.left * hookTargerSpeed * Time.deltaTime;
 							hookTarget.DORotate (new Vector3 (0, 0, -30), 0.2f, RotateMode.Fast);
 						} else {
@@ -110,8 +112,8 @@ public class ThrowHook : MonoBehaviour {
 		for (int i = nodes.Count-1; i >= 0; i--) {
 			Destroy (nodes [i].GetComponent<CircleCollider2D> ());
 			lr.positionCount--;
-			if (i == 0) {
-				endDirection = nodes [i].transform.position - player.position;
+			if (i == nodes.Count-1) {
+				endDirection = nodes [0].transform.position - player.position;
 			}
 			while (Vector3.Distance (player.position, nodes [i].transform.position) > 0.1f) {
 				
@@ -142,7 +144,9 @@ public class ThrowHook : MonoBehaviour {
 
 	public void GenerateCircle(){
 		drawCircleObj = Instantiate (drawCircle);
-		radius = 2;
+		if (radius > 1) {
+			radius -= radiusChange;
+		}
 		drawCircleObj.GetComponent<CircleCollider2D> ().offset = Vector2.zero;
 		drawCircleObj.GetComponent<CircleCollider2D> ().radius = radius;
 		DrawCircle.ToDrawCircle (drawCircleObj.transform, Vector3.zero, radius);

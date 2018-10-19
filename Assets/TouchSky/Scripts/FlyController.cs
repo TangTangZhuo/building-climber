@@ -14,7 +14,7 @@ public class FlyController : MonoBehaviour {
 	void Update () {
 		//transform.position += Vector3.up * speed * Time.deltaTime;
 		transform.position = Vector3.Lerp (transform.position, transform.position + Vector3.up, speed * Time.deltaTime);
-		if (Mathf.Abs (player.position.y - transform.position.y) > 25) {
+		if (player.position.y - transform.position.y > 14||player.position.y - transform.position.y<-24) {
 			
 			Destroy (gameObject);
 		}

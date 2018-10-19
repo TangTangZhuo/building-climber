@@ -16,14 +16,16 @@ public class PlayerControllerSky : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D coll){
-		if (coll.tag == "deadline") {
-			Time.timeScale = 0.2f;
-			Invoke ("GameOver", 0.2f);
-		}
+//		if (coll.tag == "deadline") {
+//			Time.timeScale = 0.2f;
+//			Time.fixedDeltaTime = 0.02f * Time.timeScale;
+//			Invoke ("GameOver", 0.2f);
+//		}
 	}
 
-	public void GameOver(){
+	public static void GameOver(){
 		Time.timeScale = 1f;
+		Time.fixedDeltaTime = 0.02f * 0.35f;
 		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 	}
 }
