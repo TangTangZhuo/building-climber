@@ -30,6 +30,7 @@ public class PlayerCollider : MonoBehaviour {
 		if (throwHook.gameState != GameState.isHooking) {
 			if (coll.tag == "deadline") {
 				Instantiate (ParticleManager.Instance.particle_playerDead, transform.position, transform.rotation);
+				Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 				GameOverPre ();
 			}
 		}	

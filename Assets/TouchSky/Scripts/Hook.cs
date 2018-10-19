@@ -40,8 +40,11 @@ public class Hook : MonoBehaviour {
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
 				target.GetComponent<FlyController> ().speed = 50;
 				coll.tag = "curRocket";
+				Instantiate (ParticleManager.Instance.particle_hooking, transform.position, transform.rotation).transform.parent = transform;
 				ropeScritpes.throwHook.hookTarget = target;
-				target.position = transform.position;
+				//target.position = transform.position;
+				target.position += (transform.position - target.position).normalized;
+				Camera.main.transform.DOShakePosition (0.2f, 0.5f, 10, 90, false, true);
 				m_TargetJoint = gameObject.AddComponent<TargetJoint2D>();
 				m_TargetJoint.anchor = m_TargetJoint.transform.InverseTransformPoint (transform.position);
 			}

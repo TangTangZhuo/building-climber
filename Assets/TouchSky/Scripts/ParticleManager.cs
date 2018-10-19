@@ -8,6 +8,7 @@ public class ParticleManager : MonoBehaviour {
 	public GameObject particle_rocketDead;
 	public GameObject particle_playerDead;
 	public GameObject particle_playerEle;
+	public GameObject particle_hooking;
 
 	public static ParticleManager Instance{
 		get{ return instance;}
