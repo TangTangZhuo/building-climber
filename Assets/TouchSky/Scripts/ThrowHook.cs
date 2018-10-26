@@ -24,7 +24,7 @@ public class ThrowHook : MonoBehaviour {
 	public Transform hookTarget;
 	public GameObject drawCircle;
 	GameObject drawCircleObj;
-	public float hookTargerSpeed = 100;
+	public float hookTargerSpeed = 10;
 
 	[HideInInspector]
 	public float radius = 1;
@@ -36,7 +36,7 @@ public class ThrowHook : MonoBehaviour {
 
 	Vector3 mousePos;
 
-	bool isStart = false;
+	public bool isStart = false;
 	void Awake(){
 		
 	}
@@ -50,6 +50,7 @@ public class ThrowHook : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
 		if (isStart) {
 			if (gameState == GameState.isInSky) {
 				//if(Input.GetTouch)
@@ -72,22 +73,28 @@ public class ThrowHook : MonoBehaviour {
 			if (gameState == GameState.isHooking)
 		if (Input.GetMouseButtonUp (0)) {
 				gameState = GameState.isTakeBacking;
-				hookTarget.DORotate (new Vector3 (0, 0, 0), 0.2f, RotateMode.Fast);
+				hookTarget.DORotate (new Vector3 (0, 0, 0), 1f, RotateMode.Fast);
 				ShootPlayer ();
 			}
 			if (gameState == GameState.isHooking) {
 				if (Input.GetMouseButton (0)) {
 					if (hookTarget) {
 						float mouseDetal = mousePos.x - Camera.main.ScreenToViewportPoint (Input.mousePosition).x;
-
+						FlyController flyController = hookTarget.GetComponent<FlyController> ();
+						if (flyController.speed > 10) {
+							flyController.speed -= Time.deltaTime * 8;
+						}
+						if (flyController.speed <= 10&&flyController.speed>1) {
+							flyController.speed -= Time.deltaTime * 1;
+						}
 						if (mouseDetal > 0.002f) {
-							hookTarget.position += Vector3.left * hookTargerSpeed * Time.deltaTime;
-							hookTarget.DORotate (new Vector3 (0, 0, 30), 0.2f, RotateMode.Fast);
+							hookTarget.position = Vector3.Lerp(hookTarget.position,hookTarget.position + Vector3.left , hookTargerSpeed * Time.deltaTime);
+							hookTarget.DORotate (new Vector3 (0, 0, 30), 0.3f, RotateMode.Fast);
 						} else if (mouseDetal < -0.002f) {
 							hookTarget.position -= Vector3.left * hookTargerSpeed * Time.deltaTime;
-							hookTarget.DORotate (new Vector3 (0, 0, -30), 0.2f, RotateMode.Fast);
+							hookTarget.DORotate (new Vector3 (0, 0, -30), 0.3f, RotateMode.Fast);
 						} else {
-							hookTarget.DORotate (new Vector3 (0, 0, 0), 0.2f, RotateMode.Fast);
+							hookTarget.DORotate (new Vector3 (0, 0, 0), 0.6f, RotateMode.Fast);
 						}
 					}
 				}
@@ -113,7 +120,12 @@ public class ThrowHook : MonoBehaviour {
 			Destroy (nodes [i].GetComponent<CircleCollider2D> ());
 			lr.positionCount--;
 			if (i == nodes.Count-1) {
-				endDirection = nodes [0].transform.position - player.position;
+				//endDirection = nodes [0].transform.position - player.position;
+				if (hookTarget) {
+					endDirection = new Vector3 (-Mathf.Tan (hookTarget.rotation.eulerAngles.z / 180f * Mathf.PI), 1);
+				} else {
+					endDirection = Vector3.up;				
+				}
 			}
 			while (Vector3.Distance (player.position, nodes [i].transform.position) > 0.1f) {
 				
@@ -139,11 +151,14 @@ public class ThrowHook : MonoBehaviour {
 	}
 
 	void DestoryRocket(){
-		Destroy (hookTarget.gameObject);
+		if (hookTarget) {
+			Destroy (hookTarget.gameObject);
+		}
 	}
 
 	public void GenerateCircle(){
 		drawCircleObj = Instantiate (drawCircle);
+
 		if (radius > 1) {
 			radius -= radiusChange;
 		}

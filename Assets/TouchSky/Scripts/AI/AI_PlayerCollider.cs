@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class PlayerCollider : MonoBehaviour {
+public class AI_PlayerCollider : MonoBehaviour {
 	ThrowHook throwHook;
 	Rigidbody2D rig2D;
 	SpriteRenderer sr;
@@ -14,14 +14,12 @@ public class PlayerCollider : MonoBehaviour {
 		sr = GetComponent<SpriteRenderer> ();
 	}
 
-
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
 	void OnTriggerEnter2D(Collider2D coll){
-		
 		if (throwHook.gameState == GameState.isHooking) {
 			if (coll.tag == "deadline" || coll.tag == "rocket") {
 				rig2D.AddForce ((Vector2)(transform.position - coll.transform.position).normalized * 1000);
@@ -35,8 +33,7 @@ public class PlayerCollider : MonoBehaviour {
 				Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 				GameOverPre ();
 			}
-		}
-
+		}	
 
 		if (coll.tag == "deadcloud") {
 			Instantiate (ParticleManager.Instance.particle_playerEle, transform.position, transform.rotation).transform.parent = transform;
@@ -54,7 +51,7 @@ public class PlayerCollider : MonoBehaviour {
 	}
 
 	void GetReward(){
-		
+
 	}
 
 	void GameOverPre(){

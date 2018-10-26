@@ -8,11 +8,17 @@ public class InCircle : MonoBehaviour {
 
 	public Material black;
 	public Material write;
+
 	// Use this for initialization
 	void Start () {
+		
+	}
+
+	void Awake(){
+		
 		throwHook = GameObject.FindGameObjectWithTag ("Player").GetComponent<ThrowHook> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		
