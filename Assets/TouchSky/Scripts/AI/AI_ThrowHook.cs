@@ -17,7 +17,8 @@ public class AI_ThrowHook : MonoBehaviour {
 	//钩子预制体
 	public GameObject hook;
 	//钩子实例
-	GameObject curHook;
+	[HideInInspector]
+	public GameObject curHook;
 
 	[HideInInspector]
 	//瞄准圈内即将勾住的飞船
@@ -43,7 +44,7 @@ public class AI_ThrowHook : MonoBehaviour {
 	public float radius = 1;
 	[HideInInspector]
 	//瞄准镜缩放间隔
-	public float radiusChange = 0.1f;
+	public float radiusChange = 0.05f;
 
 	//AI状态
 	public AIState gameState = AIState.isInSky;
@@ -67,7 +68,7 @@ public class AI_ThrowHook : MonoBehaviour {
 
 	void Start () {
 		radius = 3;
-		radiusChange = 0.1f;
+		radiusChange = 0.05f;
 	}
 
 
@@ -107,20 +108,23 @@ public class AI_ThrowHook : MonoBehaviour {
 
 			if (gameState == AIState.isHooking) {
 				if (hookTarget) {
+					
 					Vector2 direction = new Vector3 (-Mathf.Tan (hookTarget.rotation.eulerAngles.z / 180f * Mathf.PI), 1);
 					float length = 10;
 					RaycastHit2D[] hit2D = Physics2D.RaycastAll ((Vector2)curHook.transform.position, direction, length);
 
 					for (int i = 0; i < hit2D.Length; i++) {
-						if (hit2D [i].collider.tag == "rocket") {
+						if (hit2D [i].collider.tag == "rocket") {							
 							gameState = AIState.isTakeBacking;
 							hookTarget.DORotate (new Vector3 (0, 0, 0), 1f, RotateMode.Fast);
-							ShootPlayer ();
+							ShootPlayer (hookTarget);
 							break;
 						}
 					}
 				}
+
 			}
+
 			if (gameState == AIState.isHooking) {				
 				if (hookTarget) {						
 					FlyController flyController = hookTarget.GetComponent<FlyController> ();
@@ -164,17 +168,17 @@ public class AI_ThrowHook : MonoBehaviour {
 		}
 	}
 
-	void ShootPlayer(){
+	public void ShootPlayer(Transform targetTrans){
 		AI_RopeSriptes m_RopeSripts = curHook.GetComponent<AI_RopeSriptes> ();
 		List<GameObject> nodes = m_RopeSripts.nodes;
 		Transform player = m_RopeSripts.player.transform;
 		LineRenderer lr = m_RopeSripts.lr;
-		StartCoroutine(TakeBackRope (nodes, player,lr));
+		StartCoroutine(TakeBackRope (nodes, player,lr,targetTrans));
 	}
 
 
 
-	IEnumerator TakeBackRope(List<GameObject> nodes,Transform player,LineRenderer lr){
+	IEnumerator TakeBackRope(List<GameObject> nodes,Transform player,LineRenderer lr,Transform targetTrans){
 		int lrCount = lr.positionCount;
 
 		for (int i = nodes.Count-1; i >= 0; i--) {
@@ -182,7 +186,7 @@ public class AI_ThrowHook : MonoBehaviour {
 			lr.positionCount--;
 			if (i == nodes.Count-1) {
 				//endDirection = nodes [0].transform.position - player.position;
-				endDirection = new Vector3(-Mathf.Tan(hookTarget.rotation.eulerAngles.z/180f*Mathf.PI),1);
+				endDirection = new Vector3(-Mathf.Tan(targetTrans.rotation.eulerAngles.z/180f*Mathf.PI),1);
 			}
 			while (Vector3.Distance (player.position, nodes [i].transform.position) > 0.1f) {
 

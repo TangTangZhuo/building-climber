@@ -5,6 +5,15 @@ using DG.Tweening;
 
 public class RocketCollider : MonoBehaviour {
 	ThrowHook throwHook;
+	AI_ThrowHook ai_throwHook;
+
+	public string aiName = "";
+
+	void OnEnable(){
+		if (aiName.StartsWith ("AI")) {
+			ai_throwHook = GameObject.Find (aiName).GetComponent<AI_ThrowHook> ();
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -27,7 +36,13 @@ public class RocketCollider : MonoBehaviour {
 						Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 						Invoke ("GameOverPre", 0.4f);
 					} else {
-						Destroy (this);
+						if (ai_throwHook) {		
+//							//ai_throwHook.gameState = AI_ThrowHook.AIState.isHooking;
+//							ai_throwHook.ShootPlayer(transform);
+							ai_throwHook.GenerateCircle ();
+							Destroy (ai_throwHook.curHook);
+							Destroy (this.transform.parent.parent.gameObject);
+						}
 					}
 				}
 				if (coll.tag == "balloon") {

@@ -89,6 +89,9 @@ public class AI_RopeSriptes : MonoBehaviour {
 			HingeJoint2D[] joints = go.GetComponents<HingeJoint2D> ();
 			joints [1].connectedBody = lastNode.GetComponent<Rigidbody2D> ();
 		} else {
+			if (!lastNode.GetComponent<HingeJoint2D> ()) {
+				lastNode.AddComponent<HingeJoint2D> ();
+			}
 			HingeJoint2D joint = lastNode.GetComponent<HingeJoint2D> ();
 			joint.connectedBody = go.GetComponent<Rigidbody2D> ();
 		}

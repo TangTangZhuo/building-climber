@@ -39,6 +39,15 @@ public class Hook : MonoBehaviour {
 					return;
 				ropeScritpes.player.GetComponent<ThrowHook> ().gameState = GameState.isHooking;
 				target = obj.parent;
+
+				target.Find ("sprinting").gameObject.SetActive (true);
+				coll.GetComponent<PolygonCollider2D> ().enabled = false;
+				StartCoroutine (ResetRocket (target, coll, 1));
+
+				MultiHaptic.HapticHeavy ();
+				MultiHaptic.HapticMedium ();
+				MultiHaptic.HapticLight ();
+
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
 				target.GetComponent<FlyController> ().speed = 20;
 				coll.tag = "curRocket";
@@ -52,6 +61,14 @@ public class Hook : MonoBehaviour {
 				m_TargetJoint.frequency = 15;
 				m_TargetJoint.anchor = m_TargetJoint.transform.InverseTransformPoint (transform.position);
 			}
+		}
+	}
+
+	IEnumerator ResetRocket(Transform target,Collider2D coll,float time){
+		yield return new WaitForSeconds (time);
+		if (target) {
+			target.Find ("sprinting").gameObject.SetActive (false);
+			coll.GetComponent<PolygonCollider2D> ().enabled = true;
 		}
 	}
 		

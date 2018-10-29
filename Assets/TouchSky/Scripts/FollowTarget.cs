@@ -18,7 +18,11 @@ public class FollowTarget : MonoBehaviour {
 	void Update () {
 		if (throwHook.gameState == GameState.isHooking || throwHook.gameState == GameState.isTakeBacking) {
 			if (throwHook.ropeSriptes) {
-				target = throwHook.ropeSriptes.transform;
+				if (throwHook.ropeSriptes.transform)
+					target = throwHook.ropeSriptes.transform;
+				else {
+					target = throwHook.transform;
+				}
 			}
 		} else if (throwHook.gameState == GameState.isShooting || throwHook.gameState == GameState.isInSky) {
 			target = throwHook.transform;
