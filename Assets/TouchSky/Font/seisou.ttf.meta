@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 92904ba77a6e2478ca600bd672f55d71
+timeCreated: 1540892714
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Solid Edge ISO Unicode
+  fontNames:
+  - Solid Edge ISO Unicode
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -11,7 +11,15 @@ public class FlyController : MonoBehaviour {
 	AI_ThrowHook ai_throwHook;
 	ThrowHook throwHook;
 
+	AI_ThrowHook[] ai_throwHooks;
+
 	void Start () {
+		GameObject[] objs = GameObject.FindGameObjectsWithTag ("AI");
+		ai_throwHooks = new AI_ThrowHook[objs.Length];
+		for (int i = 0; i < objs.Length; i++) {
+			ai_throwHooks[i] = objs [i].GetComponent<AI_ThrowHook> ();
+		}
+
 		rocketGenerate = FindObjectOfType (typeof(RocketGenerate))as RocketGenerate;
 
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
@@ -35,10 +43,26 @@ public class FlyController : MonoBehaviour {
 			Destroy (gameObject);
 		}
 		if (transform.position.y - player.position.y > 24 || player.position.y - transform.position.y > 14) {
-			//transform.SetParent (otherRocket);
-			if (ai_throwHook && ai_throwHook.hookTarget == transform) {				
-			}else if(throwHook && throwHook.hookTarget == transform){				
-			}else {
+//			transform.SetParent (otherRocket);
+
+//			if (ai_throwHook && ai_throwHook.hookTarget == transform) {				
+//			}else if(throwHook && throwHook.hookTarget == transform){				
+//			}else {
+//				Destroy (gameObject);
+//			}
+
+			for (int i = 0; i < ai_throwHooks.Length; i++) {
+
+				if (ai_throwHooks [i].hookTarget && ai_throwHooks [i].hookTarget == transform) {
+				} else {
+					Destroy (gameObject);
+				}
+
+			}
+
+			if (throwHook && throwHook.hookTarget == transform) {
+				
+			} else {
 				Destroy (gameObject);
 			}
 		}

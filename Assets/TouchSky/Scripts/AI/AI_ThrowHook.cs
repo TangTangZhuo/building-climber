@@ -62,6 +62,10 @@ public class AI_ThrowHook : MonoBehaviour {
 	//飞船变向频率
 	float targetDirChangeTime = 0;
 
+	IEnumerator takeBackRope;
+	bool isShootFinish = true;
+
+	float shootSpaceTime = 2;
 	void Awake(){
 
 	}
@@ -69,6 +73,7 @@ public class AI_ThrowHook : MonoBehaviour {
 	void Start () {
 		radius = 3;
 		radiusChange = 0.05f;
+
 	}
 
 
@@ -93,10 +98,22 @@ public class AI_ThrowHook : MonoBehaviour {
 			if (gameState == AIState.isInSky) {				
 				if (curRocket) {
 					gameState = AIState.isShooting;
+					isShootFinish = false;
 					Vector2 destiny = (Vector2)curRocket.transform.position;
 					curHook = (GameObject)Instantiate (hook, transform.position, Quaternion.LookRotation (Vector3.forward, destiny - (Vector2)transform.position));
 					curHook.GetComponent<AI_RopeSriptes> ().destiny = destiny;
 					curHook.GetComponent<AI_RopeSriptes> ().ainame = transform.name;
+					curHook.GetComponent<AI_RopeSriptes> ().ShootFinish += () => {
+						isShootFinish = true;
+						if(!hookTarget){
+							if(takeBackRope!=null){
+								StopCoroutine(takeBackRope);
+							}
+							Destroy (curHook);
+							gameState = AIState.isInSky;
+							GenerateCircle ();
+						}
+					};
 					curHook.SetActive (true);
 					ai_ropeSriptes = curHook.GetComponent<AI_RopeSriptes> ();
 					if (drawCircleObj) {
@@ -108,19 +125,30 @@ public class AI_ThrowHook : MonoBehaviour {
 
 			if (gameState == AIState.isHooking) {
 				if (hookTarget) {
-					
-					Vector2 direction = new Vector3 (-Mathf.Tan (hookTarget.rotation.eulerAngles.z / 180f * Mathf.PI), 1);
-					float length = 10;
-					RaycastHit2D[] hit2D = Physics2D.RaycastAll ((Vector2)curHook.transform.position, direction, length);
+					shootSpaceTime += Time.deltaTime;
+					if (shootSpaceTime >= 0.3f) {
+						Vector2 direction = new Vector3 (-Mathf.Tan (hookTarget.rotation.eulerAngles.z / 180f * Mathf.PI), 1);
+						float length = 10;
+						RaycastHit2D[] hit2D = Physics2D.RaycastAll ((Vector2)curHook.transform.position, direction, length);
 
-					for (int i = 0; i < hit2D.Length; i++) {
-						if (hit2D [i].collider.tag == "rocket") {							
-							gameState = AIState.isTakeBacking;
-							hookTarget.DORotate (new Vector3 (0, 0, 0), 1f, RotateMode.Fast);
-							ShootPlayer (hookTarget);
-							break;
+						for (int i = 0; i < hit2D.Length; i++) {
+							if (hit2D [i].collider.tag == "rocket" && isShootFinish) {							
+								gameState = AIState.isTakeBacking;
+								hookTarget.DORotate (new Vector3 (0, 0, 0), 1f, RotateMode.Fast);
+								ShootPlayer (hookTarget);
+								break;
+							}
 						}
+
+						shootSpaceTime = 0;
 					}
+				} else {
+					if(takeBackRope!=null){
+						StopCoroutine(takeBackRope);
+					}
+					Destroy (curHook);
+					gameState = AIState.isInSky;
+					GenerateCircle ();
 				}
 
 			}
@@ -173,34 +201,50 @@ public class AI_ThrowHook : MonoBehaviour {
 		List<GameObject> nodes = m_RopeSripts.nodes;
 		Transform player = m_RopeSripts.player.transform;
 		LineRenderer lr = m_RopeSripts.lr;
-		StartCoroutine(TakeBackRope (nodes, player,lr,targetTrans));
+		takeBackRope = TakeBackRope (nodes, player, lr, targetTrans);
+
+		StartCoroutine(takeBackRope);
+
 	}
 
 
 
 	IEnumerator TakeBackRope(List<GameObject> nodes,Transform player,LineRenderer lr,Transform targetTrans){
 		int lrCount = lr.positionCount;
+		try {
+			
+			for (int i = nodes.Count - 1; i >= 0; i--) {
+				if (nodes [i]) {
+					Destroy (nodes [i].GetComponent<CircleCollider2D> ());			
+			
+					lr.positionCount--;
+					if (i == nodes.Count - 1) {
+						//endDirection = nodes [0].transform.position - player.position;
+						endDirection = new Vector3 (-Mathf.Tan (targetTrans.rotation.eulerAngles.z / 180f * Mathf.PI), 1);
+					}
+				
+					while (Vector3.Distance (player.position, nodes [i].transform.position) > 0.1f) {
+					
+						player.position = Vector3.MoveTowards (player.position, nodes [i].transform.position, 10 * Time.deltaTime);
 
-		for (int i = nodes.Count-1; i >= 0; i--) {
-			Destroy (nodes [i].GetComponent<CircleCollider2D> ());
-			lr.positionCount--;
-			if (i == nodes.Count-1) {
-				//endDirection = nodes [0].transform.position - player.position;
-				endDirection = new Vector3(-Mathf.Tan(targetTrans.rotation.eulerAngles.z/180f*Mathf.PI),1);
-			}
-			while (Vector3.Distance (player.position, nodes [i].transform.position) > 0.1f) {
+						yield return null;
 
-				player.position = Vector3.MoveTowards (player.position, nodes [i].transform.position, 10*Time.deltaTime);
+					}						
 
-				yield return null;
+					if (i > 1) {
+						player.position = Vector3.MoveTowards (player.position, nodes [i - 1].transform.position, 10 * Time.deltaTime);
+					}
+					if (ai_ropeSriptes.vertexCount > 0)
+						ai_ropeSriptes.vertexCount--;
+					yield return null;
+				}
 			}
-			if (i > 1) {
-				player.position = Vector3.MoveTowards (player.position, nodes [i - 1].transform.position, 10 * Time.deltaTime);
-			}
-			if (ai_ropeSriptes.vertexCount > 0)
-				ai_ropeSriptes.vertexCount--;
-			yield return null;
+		} catch (System.Exception e) {
+			Debug.Log (e);
+		} finally {
+
 		}
+
 		if (curHook) {
 			Destroy (curHook);
 			gameState = AIState.isInSky;

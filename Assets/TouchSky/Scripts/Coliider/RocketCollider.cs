@@ -5,19 +5,25 @@ using DG.Tweening;
 
 public class RocketCollider : MonoBehaviour {
 	ThrowHook throwHook;
-	AI_ThrowHook ai_throwHook;
+	AI_ThrowHook[] ai_throwHooks;
 
-	public string aiName = "";
+	//public string aiName = "";
 
 	void OnEnable(){
-		if (aiName.StartsWith ("AI")) {
-			ai_throwHook = GameObject.Find (aiName).GetComponent<AI_ThrowHook> ();
-		}
+//		print (aiName);
+//		if (aiName.StartsWith ("AI")) {
+//			ai_throwHook = GameObject.Find (aiName).GetComponent<AI_ThrowHook> ();
+//		}
 	}
 
 	// Use this for initialization
 	void Start () {
 		throwHook = GameObject.FindGameObjectWithTag ("Player").GetComponent<ThrowHook>();
+		GameObject[] objs = GameObject.FindGameObjectsWithTag ("AI");
+		ai_throwHooks = new AI_ThrowHook[objs.Length];
+		for (int i = 0; i < objs.Length; i++) {
+			ai_throwHooks[i] = objs [i].GetComponent<AI_ThrowHook> ();
+		}
 	}
 	
 	// Update is called once per frame
@@ -26,6 +32,7 @@ public class RocketCollider : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D coll){
+	//	print (ai_throwHook);
 		//if (throwHook.hookTarget == transform.parent.parent) {
 			if (transform.tag == "curRocket") {
 				if (throwHook.gameState == GameState.isHooking) {
@@ -35,15 +42,8 @@ public class RocketCollider : MonoBehaviour {
 					if (throwHook.hookTarget == transform.parent.parent) {
 						Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 						Invoke ("GameOverPre", 0.4f);
-					} else {
-						if (ai_throwHook) {		
-//							//ai_throwHook.gameState = AI_ThrowHook.AIState.isHooking;
-//							ai_throwHook.ShootPlayer(transform);
-							ai_throwHook.GenerateCircle ();
-							Destroy (ai_throwHook.curHook);
-							Destroy (this.transform.parent.parent.gameObject);
-						}
 					}
+
 				}
 				if (coll.tag == "balloon") {
 					if (throwHook.hookTarget == transform.parent.parent) {
@@ -56,6 +56,28 @@ public class RocketCollider : MonoBehaviour {
 				
 				}
 			}
+
+		//AI碰撞
+		if (transform.tag == "curRocket") {
+			if (coll.tag == "deadcloud" || coll.tag == "rocket") {									
+				for (int i = 0; i < ai_throwHooks.Length; i++) {
+					if (ai_throwHooks [i].hookTarget == transform.parent.parent) {
+						
+						Instantiate (ParticleManager.Instance.particle_rocketDead, transform.position, transform.rotation);
+						transform.parent.parent.GetComponent<SpriteRenderer> ().enabled = false;								
+
+						Destroy (ai_throwHooks [i].curHook);
+						ai_throwHooks [i].gameState = AI_ThrowHook.AIState.isInSky;
+
+						Destroy (this.transform.parent.parent.gameObject);
+						ai_throwHooks [i].GenerateCircle ();
+											
+					}
+				}
+					
+			}
+				
+		}
 		//}
 	}
 

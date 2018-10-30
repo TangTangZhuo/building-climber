@@ -26,6 +26,9 @@ public class AI_RopeSriptes : MonoBehaviour {
 
 	public AI_ThrowHook throwHook;
 
+	public delegate void ShootFinishDe();
+	public event ShootFinishDe ShootFinish;
+
 	void OnEnable () {
 		lr = GetComponent<LineRenderer> ();
 
@@ -50,9 +53,14 @@ public class AI_RopeSriptes : MonoBehaviour {
 					CreatNode ();
 				}
 				HingeJoint2D joint = lastNode.GetComponent<HingeJoint2D> ();
-				if (joint)
+				if (joint) {
 					joint.connectedBody = player.GetComponent<Rigidbody2D> ();
+				}
 				GetComponent<DistanceJoint2D> ().connectedBody = player.GetComponent<Rigidbody2D> ();
+
+				if (ShootFinish != null) {
+					ShootFinish ();
+				}
 			}
 		}
 		if (throwHook.gameState != AI_ThrowHook.AIState.isInSky) {

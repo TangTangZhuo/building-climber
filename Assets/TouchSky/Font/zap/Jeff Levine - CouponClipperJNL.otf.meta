@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 9d73722feb5f941709445ba720935f5c
+timeCreated: 1540892751
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Coupon Clipper JNL
+  fontNames:
+  - Coupon Clipper JNL
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -24,6 +24,9 @@ public class AI_Hook : MonoBehaviour {
 		if (m_TargetJoint) {
 			if (target) {
 				m_TargetJoint.target = target.position;
+			} else {
+				ropeScritpes.player.GetComponent<AI_ThrowHook> ().GenerateCircle ();
+				Destroy (gameObject);
 			}
 			//target.position = transform.position;
 		}

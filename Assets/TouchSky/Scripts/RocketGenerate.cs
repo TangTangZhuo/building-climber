@@ -19,6 +19,7 @@ public class RocketGenerate : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		parents = new GameObject[AIs.Length];
+		AIs = GameObject.FindGameObjectsWithTag ("AI");
 		for (int i = 0; i < AIs.Length; i++) {
 			parents[i] = new GameObject (AIs [i].name+"_parent");
 		}
@@ -93,7 +94,7 @@ public class RocketGenerate : MonoBehaviour {
 			GameObject go = GameObject.Instantiate (rocket, generatePos, rocket.transform.rotation, parent);
 			go.GetComponent<FlyController> ().speed = Random.Range (1f, 6f);
 			go.GetComponent<SpriteRenderer> ().DOFade (1, 0.3f).OnComplete(()=>{
-				go.transform.Find("RocketCollider").GetComponentInChildren<RocketCollider>().aiName = pos.name;
+				//go.transform.Find("RocketCollider").GetComponentInChildren<RocketCollider>().aiName = pos.name;
 				go.transform.Find("RocketCollider").gameObject.SetActive(true);
 			});
 		}
