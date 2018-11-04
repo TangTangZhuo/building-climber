@@ -6,6 +6,7 @@ using DG.Tweening;
 public class AI_Hook : MonoBehaviour {
 	Rigidbody2D hookRig2D;
 	AI_RopeSriptes ropeScritpes;
+	AI_ThrowHook ai_ThrowHook;
 
 	TargetJoint2D m_TargetJoint;
 	public Transform target;
@@ -16,6 +17,7 @@ public class AI_Hook : MonoBehaviour {
 	void Start () {
 		hookRig2D = GetComponent<Rigidbody2D> ();
 		ropeScritpes = GetComponent<AI_RopeSriptes> ();
+		ai_ThrowHook = ropeScritpes.player.GetComponent<AI_ThrowHook> ();
 	}
 
 	// Update is called once per frame
@@ -25,7 +27,7 @@ public class AI_Hook : MonoBehaviour {
 			if (target) {
 				m_TargetJoint.target = target.position;
 			} else {
-				ropeScritpes.player.GetComponent<AI_ThrowHook> ().GenerateCircle ();
+				ai_ThrowHook.GenerateCircle ();
 				Destroy (gameObject);
 			}
 			//target.position = transform.position;
@@ -45,11 +47,13 @@ public class AI_Hook : MonoBehaviour {
 				ai_ThrowHook.gameState = AI_ThrowHook.AIState.isHooking;
 				target = obj.parent;
 
+				StartCoroutine (ai_ThrowHook.ChangeRocketColor (target));
+
 				target.Find ("sprinting").gameObject.SetActive (true);
 				coll.GetComponent<PolygonCollider2D> ().enabled = false;
 				StartCoroutine (ResetRocket (target, coll, 1));
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
-				target.GetComponent<FlyController> ().speed = 20;
+				target.GetComponent<FlyController> ().speed = 20 + (PlayerPrefs.GetInt ("curLevel", 1)-1)*0.1f;
 				coll.tag = "curRocket";
 				Instantiate (ParticleManager.Instance.particle_hooking, transform.position, transform.rotation).transform.parent = transform;
 				ropeScritpes.throwHook.hookTarget = target;

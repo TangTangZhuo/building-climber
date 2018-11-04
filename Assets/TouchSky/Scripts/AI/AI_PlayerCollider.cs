@@ -31,7 +31,7 @@ public class AI_PlayerCollider : MonoBehaviour {
 			if (coll.tag == "deadline") {
 				Instantiate (ParticleManager.Instance.particle_playerDead, transform.position, transform.rotation);
 				//Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
-				GameOverPre ();
+				//GameOverPre ();
 			}
 		}	
 
@@ -61,6 +61,6 @@ public class AI_PlayerCollider : MonoBehaviour {
 	}
 
 	void GameOver(){
-		PlayerControllerSky.GameOver ();
+		PlayerControllerSky.GameEnd ();
 	}
 }

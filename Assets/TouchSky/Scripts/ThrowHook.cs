@@ -13,6 +13,8 @@ public enum GameState{
 public class ThrowHook : MonoBehaviour {
 	public GameObject hook;
 
+	public Transform ragDoll;
+
 	GameObject curHook;
 	[HideInInspector]
 	public GameObject curRocket;
@@ -36,7 +38,12 @@ public class ThrowHook : MonoBehaviour {
 
 	Vector3 mousePos;
 
+	Rigidbody2D rig2D;
+
 	public bool isStart = false;
+
+	bool isOverPunch = false;
+
 	void Awake(){
 		
 	}
@@ -45,13 +52,26 @@ public class ThrowHook : MonoBehaviour {
 		//curRocket = null;
 		radius = 3;
 		radiusChange = 0.1f;
+
+		rig2D = GetComponent<Rigidbody2D> ();
+
+		StartCoroutine ("PunchTrans");
 	}
 		
 
+
 	// Update is called once per frame
 	void Update () {
+		if (rig2D.velocity.y < -10) {
+			rig2D.velocity = new Vector2 (rig2D.velocity.x, -10);
+		}
 
 		if (isStart) {
+
+			if (!isOverPunch) {
+				OverPunch ();
+			}
+
 			if (gameState == GameState.isInSky) {
 				//if(Input.GetTouch)
 				if (Input.GetMouseButtonDown (0)) {
@@ -70,29 +90,31 @@ public class ThrowHook : MonoBehaviour {
 					}
 				}
 			}
-			if (gameState == GameState.isHooking)
-		if (Input.GetMouseButtonUp (0)) {
-				gameState = GameState.isTakeBacking;
-				hookTarget.DORotate (new Vector3 (0, 0, 0), 1f, RotateMode.Fast);
-				ShootPlayer ();
+			if (gameState == GameState.isHooking) {
+				if (Input.GetMouseButtonUp (0)) {
+					gameState = GameState.isTakeBacking;
+					hookTarget.DORotate (new Vector3 (0, 0, 0), 0.5f, RotateMode.Fast);
+					ShootPlayer ();
+				}
+					
 			}
 			if (gameState == GameState.isHooking) {
 				if (Input.GetMouseButton (0)) {
 					if (hookTarget) {
 						float mouseDetal = mousePos.x - Camera.main.ScreenToViewportPoint (Input.mousePosition).x;
 						FlyController flyController = hookTarget.GetComponent<FlyController> ();
-						if (flyController.speed > 10) {
+						if (flyController.speed > PlayerPrefs.GetFloat ("maxSpeedValue", 5)) {
 							flyController.speed -= Time.deltaTime * 8;
 						}
-						if (flyController.speed <= 10&&flyController.speed>1) {
-							flyController.speed -= Time.deltaTime * 1;
-						}
+//						if (flyController.speed <= 10&&flyController.speed>1) {
+//							flyController.speed -= Time.deltaTime * 1;
+//						}
 						if (mouseDetal > 0.002f) {
-							hookTarget.position = Vector3.Lerp(hookTarget.position,hookTarget.position + Vector3.left , hookTargerSpeed * Time.deltaTime);
-							hookTarget.DORotate (new Vector3 (0, 0, 30), 0.3f, RotateMode.Fast);
+							hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed * Time.deltaTime);
+							hookTarget.DORotate (new Vector3 (-30, 30, 30), 0.3f, RotateMode.Fast);
 						} else if (mouseDetal < -0.002f) {
 							hookTarget.position -= Vector3.left * hookTargerSpeed * Time.deltaTime;
-							hookTarget.DORotate (new Vector3 (0, 0, -30), 0.3f, RotateMode.Fast);
+							hookTarget.DORotate (new Vector3 (-30, -30, -30), 0.3f, RotateMode.Fast);
 						} else {
 							hookTarget.DORotate (new Vector3 (0, 0, 0), 0.6f, RotateMode.Fast);
 						}
@@ -101,6 +123,20 @@ public class ThrowHook : MonoBehaviour {
 			}
 			mousePos = Camera.main.ScreenToViewportPoint (Input.mousePosition);
 		}
+	}
+
+	//准备阶段晃动
+	IEnumerator PunchTrans(){
+		while (!isStart) {
+			transform.DOShakePosition (100, 0.1f, 1, 90, false,false);
+			yield return new WaitForSeconds (100);
+		}
+	}
+
+	void OverPunch(){
+		StopCoroutine ("PunchTrans");
+		transform.DOKill (false);
+		isOverPunch = true;
 	}
 
 	void ShootPlayer(){
@@ -145,6 +181,7 @@ public class ThrowHook : MonoBehaviour {
 			gameState = GameState.isInSky;
 			GetComponent<Rigidbody2D> ().AddForce (endDirection.normalized*endPower);
 			DestoryRocket ();
+			RocketColorManager.Instance.color1.SetFloat ("_ThresholdY", -8.5f);
 			GenerateCircle ();
 		}
 
@@ -185,6 +222,27 @@ public class ThrowHook : MonoBehaviour {
 			}
 			yield return null;
 		}
+	}
+
+
+	public IEnumerator ChangeRocketColor(Transform rocket){
+		MeshRenderer rightFootMat = rocket.Find ("rocket3D").Find ("RightFoot").GetComponent<MeshRenderer>();
+		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
+		MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
+
+
+		Material[] materials = new Material[]{ RocketColorManager.Instance.normal, RocketColorManager.Instance.color1 };
+		rightFootMat.materials = materials;
+		LeftFootMat.materials = materials;
+		DownMat.materials = materials;
+
+//		float thresholdY = -8.5f;
+//		while (thresholdY > -7.1f) {
+//			thresholdY -= Time.deltaTime;
+//			rightFootMat.materials[1].SetFloat ("_ThresholdY", thresholdY);
+//			LeftFootMat.materials[1].SetFloat ("_ThresholdY", thresholdY);
+			yield return null;
+//		}
 	}
 
 }

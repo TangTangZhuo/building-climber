@@ -9,6 +9,10 @@ public class ProgressSlider : MonoBehaviour {
 	[HideInInspector]
 	public Text ranking;
 
+	public Text curGold;
+
+	public int goldSum = 0;
+
 	Transform player;
 
 	GameObject[] AIs;
@@ -25,14 +29,19 @@ public class ProgressSlider : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		slider = GetComponent<Slider> ();
-		ranking = transform.Find("Ranking").GetComponent<Text> ();
 		startButton = StartButton.Instance;
-		player = GameObject.FindGameObjectWithTag ("Player").transform;
-		AIs = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<RocketGenerate> ().AIs;
 	}
 
-
+	void OnEnable(){
+		slider = GetComponent<Slider> ();
+		ranking = transform.Find("Ranking").GetComponent<Text> ();
+		player = GameObject.FindGameObjectWithTag ("Player").transform;
+		AIs = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<RocketGenerate> ().AIs;
+		float distance = 350 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
+		slider.maxValue = distance;
+		slider.minValue = GameObject.FindGameObjectWithTag ("Player").transform.position.y;
+		curGold.text = "$" + 0;
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -50,7 +59,7 @@ public class ProgressSlider : MonoBehaviour {
 		}
 	}
 
-	int GetRankNumber(){
+	public int GetRankNumber(){
 		int index = 1;
 		for (int i = 0; i < AIs.Length; i++) {
 			if (AIs [i].transform.position.y > player.position.y) {
@@ -59,4 +68,6 @@ public class ProgressSlider : MonoBehaviour {
 		}
 		return index;
 	}
+		
+
 }

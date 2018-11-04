@@ -12,7 +12,12 @@ public class PlayerControllerSky : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (transform.position.x < -10.5f) {
+			transform.position = new Vector3 (-10.5f, transform.position.y, transform.position.z);
+		}
+		if (transform.position.x > 7.5f) {
+			transform.position = new Vector3 (7.5f, transform.position.y, transform.position.z);
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D coll){
@@ -23,7 +28,7 @@ public class PlayerControllerSky : MonoBehaviour {
 //		}
 	}
 
-	public static void GameOver(){
+	public static void GameEnd(){
 		Time.timeScale = 1f;
 		Time.fixedDeltaTime = 0.02f * 0.35f;
 		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);

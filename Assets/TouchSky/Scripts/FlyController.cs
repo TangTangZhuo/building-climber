@@ -33,17 +33,19 @@ public class FlyController : MonoBehaviour {
 				throwHook = player.GetComponent<ThrowHook> ();
 			}
 		}
-
+		StartCoroutine (CheckDistance ());
 	}
 	
 	void Update () {
-		//transform.position += Vector3.up * speed * Time.deltaTime;
-		transform.position = Vector3.Lerp (transform.position, transform.position + Vector3.up, speed * Time.deltaTime);
-		if (transform.position.y - rocketGenerate.maxTrans.position.y > 24||rocketGenerate.minTrans.position.y - transform.position.y > 14) {			
-			Destroy (gameObject);
+		if (transform.position.x < -10.5f) {
+			transform.position = new Vector3 (-10.5f, transform.position.y, transform.position.z);
 		}
-		if (transform.position.y - player.position.y > 24 || player.position.y - transform.position.y > 14) {
-//			transform.SetParent (otherRocket);
+		if (transform.position.x > 7.5f) {
+			transform.position = new Vector3 (7.5f, transform.position.y, transform.position.z);
+		}
+		//transform.position += Vector3.up * speed * Time.deltaTime;
+
+		transform.position = Vector3.Lerp (transform.position, transform.position + Vector3.up, speed * Time.deltaTime);
 
 //			if (ai_throwHook && ai_throwHook.hookTarget == transform) {				
 //			}else if(throwHook && throwHook.hookTarget == transform){				
@@ -51,23 +53,33 @@ public class FlyController : MonoBehaviour {
 //				Destroy (gameObject);
 //			}
 
-			for (int i = 0; i < ai_throwHooks.Length; i++) {
-
-				if (ai_throwHooks [i].hookTarget && ai_throwHooks [i].hookTarget == transform) {
-				} else {
-					Destroy (gameObject);
-				}
-
-			}
-
-			if (throwHook && throwHook.hookTarget == transform) {
-				
-			} else {
-				Destroy (gameObject);
-			}
-		}
+//			for (int i = 0; i < ai_throwHooks.Length; i++) {
+//
+//				if (ai_throwHooks [i] && ai_throwHooks [i].hookTarget == transform) {
+//				} else {
+//					Destroy (gameObject);
+//				}
+//
+//			}
+//
+//			if (throwHook && throwHook.hookTarget == transform) {
+//				
+//			} else {
+//				Destroy (gameObject);
+//			}
+//		}
 	}
 
-
+	IEnumerator CheckDistance(){
+		while (true) {			
+			if (transform.position.y - rocketGenerate.maxTrans.position.y > 24 || rocketGenerate.minTrans.position.y - transform.position.y > 14) {			
+				Destroy (gameObject);
+			}
+			if (transform.position.y - player.position.y > 24 || player.position.y - transform.position.y > 14) {
+				transform.SetParent (otherRocket);						
+			}
+			yield return new WaitForSeconds (0.2f);
+		}
+	}
 
 }

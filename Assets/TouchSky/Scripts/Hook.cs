@@ -2,19 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class Hook : MonoBehaviour {
 	Rigidbody2D hookRig2D;
 	RopeSriptes ropeScritpes;
+	ProgressSlider progress;
+	ThrowHook throwHook;
 
 	TargetJoint2D m_TargetJoint;
 	public Transform target;
 
 	public float speed = 1f;
+
+	public GameObject addGoldText;
+
+	int gold = 0;
+	//int goldSum = 0;
 	// Use this for initialization
 	void Start () {
 		hookRig2D = GetComponent<Rigidbody2D> ();
 		ropeScritpes = GetComponent<RopeSriptes> ();
+		progress = ProgressSlider.Instance;
+		throwHook = ropeScritpes.player.GetComponent<ThrowHook> ();
 	}
 	
 	// Update is called once per frame
@@ -42,14 +52,18 @@ public class Hook : MonoBehaviour {
 
 				target.Find ("sprinting").gameObject.SetActive (true);
 				coll.GetComponent<PolygonCollider2D> ().enabled = false;
-				StartCoroutine (ResetRocket (target, coll, 1));
+				StartCoroutine (ResetRocket (target, coll, (PlayerPrefs.GetFloat ("speedUpValue", 15)-PlayerPrefs.GetFloat ("maxSpeedValue", 5))/8f));
 
 				MultiHaptic.HapticHeavy ();
 				MultiHaptic.HapticMedium ();
 				MultiHaptic.HapticLight ();
 
+				AddGold ();
+
+				StartCoroutine (throwHook.ChangeRocketColor (target));
+
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
-				target.GetComponent<FlyController> ().speed = 20;
+				target.GetComponent<FlyController> ().speed = PlayerPrefs.GetFloat ("speedUpValue", 15);
 				coll.tag = "curRocket";
 				Instantiate (ParticleManager.Instance.particle_hooking, transform.position, transform.rotation).transform.parent = transform;
 				ropeScritpes.throwHook.hookTarget = target;
@@ -71,5 +85,30 @@ public class Hook : MonoBehaviour {
 			coll.GetComponent<PolygonCollider2D> ().enabled = true;
 		}
 	}
+
+	void AddGold(){
+		gold = PlayerPrefs.GetInt ("moneyEarningValue", 10);
+		StartCoroutine (GenerateGold (5,gold,1));
+	}
+
+	IEnumerator GenerateGold(int num,int gold,float time){
+		while (num > 0) {
+			Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
+			GameObject go = Instantiate (addGoldText, pos, Quaternion.identity,GameObject.Find("Canvas").transform);
+			Text goText = go.GetComponent<Text> ();
+			goText.text = "$"+Conversion.UnitChange(gold);
+			goText.DOFade (0.5f, time).OnComplete(()=>{
+				Destroy(go);
+			});
+			goText.transform.DOLocalMove (new Vector3 (0, -400, 0), time, false);
+
+			progress.goldSum += gold;
+			progress.curGold.text ="$" + Conversion.UnitChange (progress.goldSum);
+			num--;
+			yield return new WaitForSeconds (0.1f);
+		}
+	}
 		
+
+
 }

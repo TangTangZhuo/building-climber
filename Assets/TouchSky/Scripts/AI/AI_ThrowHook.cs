@@ -62,10 +62,15 @@ public class AI_ThrowHook : MonoBehaviour {
 	//飞船变向频率
 	float targetDirChangeTime = 0;
 
+	//
+	Rigidbody2D rig2D;
+
 	IEnumerator takeBackRope;
 	bool isShootFinish = true;
 
 	float shootSpaceTime = 2;
+
+	bool isOverPunch = false;
 	void Awake(){
 
 	}
@@ -73,12 +78,17 @@ public class AI_ThrowHook : MonoBehaviour {
 	void Start () {
 		radius = 3;
 		radiusChange = 0.05f;
+		rig2D = GetComponent<Rigidbody2D> ();
 
+		StartCoroutine ("PunchTrans");
 	}
 
 
 	// Update is called once per frame
 	void Update () {
+		if (rig2D.velocity.y < -10) {
+			rig2D.velocity = new Vector2 (rig2D.velocity.x, -10);
+		}
 		StartGame ();
 		if (!hookTarget) {
 			gameState = AIState.isInSky;
@@ -94,7 +104,12 @@ public class AI_ThrowHook : MonoBehaviour {
 			transform.position = new Vector3 (Mathf.Clamp (transform.position.x, -9, 10), transform.position.y, transform.position.z);
 
 		}
-		if (isStart) {			
+		if (isStart) {	
+
+			if (!isOverPunch) {
+				OverPunch ();
+			}
+
 			if (gameState == AIState.isInSky) {				
 				if (curRocket) {
 					gameState = AIState.isShooting;
@@ -105,9 +120,9 @@ public class AI_ThrowHook : MonoBehaviour {
 					curHook.GetComponent<AI_RopeSriptes> ().ainame = transform.name;
 					curHook.GetComponent<AI_RopeSriptes> ().ShootFinish += () => {
 						isShootFinish = true;
-						if(!hookTarget){
-							if(takeBackRope!=null){
-								StopCoroutine(takeBackRope);
+						if (!hookTarget) {
+							if (takeBackRope != null) {
+								StopCoroutine (takeBackRope);
 							}
 							Destroy (curHook);
 							gameState = AIState.isInSky;
@@ -143,8 +158,8 @@ public class AI_ThrowHook : MonoBehaviour {
 						shootSpaceTime = 0;
 					}
 				} else {
-					if(takeBackRope!=null){
-						StopCoroutine(takeBackRope);
+					if (takeBackRope != null) {
+						StopCoroutine (takeBackRope);
 					}
 					Destroy (curHook);
 					gameState = AIState.isInSky;
@@ -156,15 +171,15 @@ public class AI_ThrowHook : MonoBehaviour {
 			if (gameState == AIState.isHooking) {				
 				if (hookTarget) {						
 					FlyController flyController = hookTarget.GetComponent<FlyController> ();
-					if (flyController.speed > 10) {
+					if (flyController.speed > (5 + (PlayerPrefs.GetInt ("curLevel", 1) - 1) * 0.05f)) {
 						flyController.speed -= Time.deltaTime * 8;
 					}
-					if (flyController.speed <= 10 && flyController.speed > 1) {
-						flyController.speed -= Time.deltaTime * 1;
-					}
+//					if (flyController.speed <= 10 && flyController.speed > 1) {
+//						flyController.speed -= Time.deltaTime * 1;
+//					}
 					if (targetDirChange == 1) {
-						hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed/3 * Time.deltaTime);
-						hookTarget.DORotate (new Vector3 (0, 0, 30), 0.3f, RotateMode.Fast);		
+						hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed / 3 * Time.deltaTime);
+						hookTarget.DORotate (new Vector3 (-30, 30, 30), 0.3f, RotateMode.Fast);		
 						targetDirChangeTime += Time.deltaTime;
 						if (targetDirChangeTime > 2) {
 							targetDirChangeTime = 0;
@@ -172,8 +187,8 @@ public class AI_ThrowHook : MonoBehaviour {
 						}
 					}
 					if (targetDirChange == 2) {
-						hookTarget.position -= Vector3.left * hookTargerSpeed/3 * Time.deltaTime;
-						hookTarget.DORotate (new Vector3 (0, 0, -30), 0.3f, RotateMode.Fast);	
+						hookTarget.position -= Vector3.left * hookTargerSpeed / 3 * Time.deltaTime;
+						hookTarget.DORotate (new Vector3 (-30, -30, -30), 0.3f, RotateMode.Fast);	
 						targetDirChangeTime += Time.deltaTime;
 						if (targetDirChangeTime > 2) {
 							targetDirChangeTime = 0;
@@ -193,7 +208,22 @@ public class AI_ThrowHook : MonoBehaviour {
 				}
 			} 
 
+		} 
+	}
+
+	//准备阶段晃动
+	IEnumerator PunchTrans(){
+		while (!isStart) {
+			transform.DOShakePosition (100, 0.1f, 1, 90, false,false);
+			yield return new WaitForSeconds (100);
 		}
+
+	}
+
+	void OverPunch(){
+		StopCoroutine ("PunchTrans");
+		transform.DOKill (false);
+		isOverPunch = true;
 	}
 
 	public void ShootPlayer(Transform targetTrans){
@@ -300,5 +330,31 @@ public class AI_ThrowHook : MonoBehaviour {
 			yield return null;
 		}
 	}
+
+	public IEnumerator ChangeRocketColor(Transform rocket){
+		
+		MeshRenderer rightFootMat = rocket.Find ("rocket3D").Find ("RightFoot").GetComponent<MeshRenderer>();
+		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
+		MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
+
+		Material[] materials = new Material[]{ RocketColorManager.Instance.normal, GetRocketMaterial(transform.name)};
+		rightFootMat.materials = materials;
+		LeftFootMat.materials = materials;
+		DownMat.materials = materials;
+
+		yield return null;
+
+	}
+
+	Material GetRocketMaterial(string ainame){
+		Dictionary<string,Material> dic = new Dictionary<string, Material>();
+		dic.Add("AI1",RocketColorManager.Instance.color2);
+		dic.Add("AI2",RocketColorManager.Instance.color3);
+		dic.Add("AI3",RocketColorManager.Instance.color4);
+		dic.Add("AI4",RocketColorManager.Instance.color5);
+		dic.Add("AI5",RocketColorManager.Instance.color6);
+		return dic[ainame];
+	}
+
 
 }

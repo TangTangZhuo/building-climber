@@ -41,7 +41,8 @@ public class RocketCollider : MonoBehaviour {
 					transform.parent.parent.GetComponent<SpriteRenderer> ().enabled = false;
 					if (throwHook.hookTarget == transform.parent.parent) {
 						Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
-						Invoke ("GameOverPre", 0.4f);
+						//Invoke ("GameOverPre", 0.4f);
+						throwHook.GetComponent<PlayerCollider>().GameOverPre();
 					}
 
 				}
@@ -92,6 +93,6 @@ public class RocketCollider : MonoBehaviour {
 	}
 
 	void GameOver(){
-		PlayerControllerSky.GameOver ();
+		PlayerControllerSky.GameEnd ();
 	}
 }

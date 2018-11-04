@@ -16,6 +16,7 @@ public class FollowTarget : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if (throwHook.gameState == GameState.isHooking || throwHook.gameState == GameState.isTakeBacking) {
 			if (throwHook.ropeSriptes) {
 				if (throwHook.ropeSriptes.transform)
@@ -28,9 +29,15 @@ public class FollowTarget : MonoBehaviour {
 			target = throwHook.transform;
 		}
 		if (target != null) {
-			Vector3 targetV3 = new Vector3 (target.position.x+offset.x, target.position.y + offset.y, transform.position.z);
-			transform.position = Vector3.Lerp (transform.position, targetV3, Time.deltaTime*4);
-			//transform.position = targetV3;
+//			if (target.position.x < 8 && target.position.x > -11) {
+				Vector3 targetV3 = new Vector3 (target.position.x + offset.x, target.position.y + offset.y, transform.position.z);
+				transform.position = Vector3.Lerp (transform.position, targetV3, Time.deltaTime * 6);
+				//transform.position = targetV3;
+//			}else{
+//				Vector3 targetV3 = new Vector3 (transform.position.x + offset.x, target.position.y + offset.y, transform.position.z);
+//				transform.position = Vector3.Lerp (transform.position, targetV3, Time.deltaTime * 6);
+//			}
 		}
+
 	}
 }

@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class StartButton : MonoBehaviour {
 
 	public GameObject Terminal;
+	public Transform BGTrigger;
+	public GameObject Progress;
+	public GameObject Skill;
+
 	[HideInInspector]
 	public float distance = 0;
 	[HideInInspector]
@@ -22,9 +26,10 @@ public class StartButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		distance = 650;
-		ProgressSlider.Instance.slider.maxValue = distance;
-		ProgressSlider.Instance.slider.minValue = GameObject.FindGameObjectWithTag ("Player").transform.position.y;
+		distance = 350 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
+
+		//ProgressSlider.Instance.slider.maxValue = distance;
+		//ProgressSlider.Instance.slider.minValue = GameObject.FindGameObjectWithTag ("Player").transform.position.y;
 	}
 	
 	// Update is called once per frame
@@ -34,9 +39,12 @@ public class StartButton : MonoBehaviour {
 
 	public void StartGame(){
 		isStart = true;
-		GetComponent<Button> ().gameObject.SetActive (false);
+		gameObject.SetActive (false);
+		Progress.SetActive (true);
+		Skill.SetActive (false);
 		Instantiate (Terminal, new Vector3 (0, distance, 0), Terminal.transform.rotation);
-
+		Instantiate (BGTrigger, new Vector3 (0, distance/3, 0), Quaternion.identity);
+		Instantiate (BGTrigger, new Vector3 (0, distance/3*2, 0), Quaternion.identity);
 	}
 
 }
