@@ -15,7 +15,8 @@ public class ThrowHook : MonoBehaviour {
 
 	public Transform ragDoll;
 
-	GameObject curHook;
+	[HideInInspector]
+	public GameObject curHook;
 	[HideInInspector]
 	public GameObject curRocket;
 	Vector3 endDirection = Vector3.zero;
@@ -44,6 +45,8 @@ public class ThrowHook : MonoBehaviour {
 
 	bool isOverPunch = false;
 
+	Camera mainCamera;
+
 	void Awake(){
 		
 	}
@@ -58,6 +61,8 @@ public class ThrowHook : MonoBehaviour {
 		StartCoroutine ("PunchTrans");
 
 		PlayerPrefs.SetFloat ("maxSpeedValue", 7);
+
+		mainCamera = Camera.main;
 	}
 		
 
@@ -78,6 +83,9 @@ public class ThrowHook : MonoBehaviour {
 				//if(Input.GetTouch)
 				if (Input.GetMouseButtonDown (0)) {
 					if (curRocket) {
+						
+						mainCamera.DOOrthoSize (6, 0.5f/Time.timeScale);
+
 						gameState = GameState.isShooting;
 						//Vector2 destiny = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 						Vector2 destiny = (Vector2)curRocket.transform.position;
@@ -185,6 +193,7 @@ public class ThrowHook : MonoBehaviour {
 			DestoryRocket ();
 			RocketColorManager.Instance.color1.SetFloat ("_ThresholdY", -8.5f);
 			GenerateCircle ();
+			mainCamera.DOOrthoSize (7.5f, 0.5f/Time.timeScale);
 		}
 
 	}

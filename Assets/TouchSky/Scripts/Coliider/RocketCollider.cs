@@ -43,6 +43,7 @@ public class RocketCollider : MonoBehaviour {
 						Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 						//Invoke ("GameOverPre", 0.4f);
 						throwHook.GetComponent<PlayerCollider>().GameOverPre();
+						Destroy (transform.parent.parent.gameObject);
 					}
 
 				}
@@ -86,13 +87,13 @@ public class RocketCollider : MonoBehaviour {
 		
 	}
 
-	void GameOverPre(){
-		Time.timeScale = 0.2f;
-		Time.fixedDeltaTime = 0.02f * Time.timeScale;
-		Invoke ("GameOver", 0.2f);
-	}
-
-	void GameOver(){
-		PlayerControllerSky.GameEnd ();
-	}
+//	void GameOverPre(){
+//		Time.timeScale = 0.2f;
+//		Time.fixedDeltaTime = 0.02f * Time.timeScale;
+//		Invoke ("GameOver", 0.2f);
+//	}
+//
+//	void GameOver(){
+//		PlayerControllerSky.GameEnd ();
+//	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PlayerCollider : MonoBehaviour {
 	ThrowHook throwHook;
@@ -10,8 +11,10 @@ public class PlayerCollider : MonoBehaviour {
 
 	public GameObject progress;
 	public GameObject rankPop;
+	public GameObject RevivePop;
 	public Transform BG;
 
+	bool isRevive = false;
 	// Use this for initialization
 	void Start () {
 		throwHook = GetComponent<ThrowHook> ();
@@ -68,11 +71,9 @@ public class PlayerCollider : MonoBehaviour {
 	}
 
 	IEnumerator MoveBG(){
-		Vector3 target = BG.localPosition + Vector3.down * 15;
+		Vector3 target = BG.localPosition + Vector3.down * 17;
 		while (true) {
 			BG.localPosition = Vector3.Lerp (BG.localPosition, target, Time.deltaTime);
-			print (BG.localPosition.y);
-			print (target.y);
 			if (BG.localPosition.y<target.y) {
 				
 				yield break;
@@ -88,7 +89,14 @@ public class PlayerCollider : MonoBehaviour {
 	public void GameOverPre(){
 		Time.timeScale = 0.2f;
 		Time.fixedDeltaTime = 0.02f * Time.timeScale;
-		Invoke ("GameEnd", 0.4f);
+
+		if (!isRevive) {
+			RevivePop.SetActive (true);
+			isRevive = true;
+		} else {
+			Invoke ("GameEnd", 0.4f);
+		}
+
 	}
 
 	void GameEnd(){
@@ -140,6 +148,7 @@ public class PlayerCollider : MonoBehaviour {
 		if (throwHook.hookTarget) {
 			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
 		}
-	//	Invoke ("GameEnd", 0.4f);
+
+		PlayerPrefs.SetInt ("curLevel", PlayerPrefs.GetInt ("curLevel", 1)+1);
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Together;
 
 public class SettlePop : MonoBehaviour {
 	public Text collect;
@@ -34,6 +35,9 @@ public class SettlePop : MonoBehaviour {
 
 	void CheckButton(){
 		doubleBtn.interactable = false;
+		if (TGSDK.CouldShowAd (TZ_TGSDK.doubleID)) {
+			doubleBtn.interactable = true;
+		}
 	}
 
 	public void OnCollectBtn(){
@@ -42,7 +46,19 @@ public class SettlePop : MonoBehaviour {
 	}
 
 	public void OnDoubleBtn(){
-		PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt("gold",0) + PlayerPrefs.GetInt ("CurGold", 0)*2 );
-		PlayerControllerSky.GameEnd ();
+		TGSDK.ShowAd (TZ_TGSDK.doubleID);
+		TGSDK.AdCompleteCallback = (string obj) => {
+			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + PlayerPrefs.GetInt ("CurGold", 0) * 2);
+			PlayerControllerSky.GameEnd ();
+		};
+		TGSDK.AdCloseCallback = (string obj) => {
+			OnCollectBtn();
+		};
+		TGSDK.AdRewardFailedCallback = (string obj) => {
+			OnCollectBtn();
+		};
+		TGSDK.AdShowFailedCallback = (string obj) => {
+			OnCollectBtn();
+		};
 	}
 }
