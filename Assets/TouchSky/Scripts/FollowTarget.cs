@@ -13,7 +13,11 @@ public class FollowTarget : MonoBehaviour {
 		throwHook = GameObject.FindGameObjectWithTag ("Player").GetComponent<ThrowHook>();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 	}
-	
+
+	public void ChangeOffset(Vector3 offsetV3){
+		offset = offsetV3;
+	}
+
 	// Update is called once per frame
 	void Update () {
 

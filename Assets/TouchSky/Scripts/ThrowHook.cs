@@ -56,6 +56,8 @@ public class ThrowHook : MonoBehaviour {
 		rig2D = GetComponent<Rigidbody2D> ();
 
 		StartCoroutine ("PunchTrans");
+
+		PlayerPrefs.SetFloat ("maxSpeedValue", 7);
 	}
 		
 

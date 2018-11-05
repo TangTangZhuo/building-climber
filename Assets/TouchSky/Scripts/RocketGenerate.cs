@@ -76,14 +76,14 @@ public class RocketGenerate : MonoBehaviour {
 
 	void FinalGenetateRocket(){
 		
-		GenerateRocket (1, player.transform, rocketParent.transform);
+		GenerateRocket (6, player.transform, rocketParent.transform);
 
 
-		for (int i = 0; i < AIs.Length; i++) {
-			if (NoOthers (AIs [i].transform)) {
-				GenerateRocket (1, AIs [i].transform, parents [i].transform);
-			}
-		}
+//		for (int i = 0; i < AIs.Length; i++) {
+//			if (NoOthers (AIs [i].transform)) {
+//				GenerateRocket (1, AIs [i].transform, parents [i].transform);
+//			}
+//		}
 	}
 
 	void GenerateRocket(int number,Transform pos,Transform parent){

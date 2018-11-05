@@ -45,6 +45,7 @@ public class StartButton : MonoBehaviour {
 		Instantiate (Terminal, new Vector3 (0, distance, 0), Terminal.transform.rotation);
 		Instantiate (BGTrigger, new Vector3 (0, distance/3, 0), Quaternion.identity);
 		Instantiate (BGTrigger, new Vector3 (0, distance/3*2, 0), Quaternion.identity);
+		Camera.main.GetComponent<FollowTarget> ().ChangeOffset (new Vector3 (0, 4, 0));
 	}
 
 }
