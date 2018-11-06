@@ -80,12 +80,14 @@ public class ThrowHook : MonoBehaviour {
 			}
 
 			if (gameState == GameState.isInSky) {
-				//if(Input.GetTouch)
+
+				if (mainCamera.orthographicSize == 6f) {
+					mainCamera.DOOrthoSize (7.5f, 0.5f / Time.timeScale);
+				}
+
 				if (Input.GetMouseButtonDown (0)) {
 					if (curRocket) {
 						
-						mainCamera.DOOrthoSize (6, 0.5f/Time.timeScale);
-
 						gameState = GameState.isShooting;
 						//Vector2 destiny = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 						Vector2 destiny = (Vector2)curRocket.transform.position;
@@ -101,6 +103,11 @@ public class ThrowHook : MonoBehaviour {
 				}
 			}
 			if (gameState == GameState.isHooking) {
+
+				if (mainCamera.orthographicSize == 7.5f) {
+					mainCamera.DOOrthoSize (6, 0.5f / Time.timeScale);
+				}
+
 				if (Input.GetMouseButtonUp (0)) {
 					gameState = GameState.isTakeBacking;
 					hookTarget.DORotate (new Vector3 (0, 0, 0), 0.5f, RotateMode.Fast);
@@ -193,7 +200,8 @@ public class ThrowHook : MonoBehaviour {
 			DestoryRocket ();
 			RocketColorManager.Instance.color1.SetFloat ("_ThresholdY", -8.5f);
 			GenerateCircle ();
-			mainCamera.DOOrthoSize (7.5f, 0.5f/Time.timeScale);
+
+
 		}
 
 	}

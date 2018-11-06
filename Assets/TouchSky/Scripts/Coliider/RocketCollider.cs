@@ -84,7 +84,7 @@ public class RocketCollider : MonoBehaviour {
 	}
 
 	void GetReward(){
-		
+		ProgressSlider.Instance.AddTreasure (1);
 	}
 
 //	void GameOverPre(){

@@ -9,6 +9,8 @@ public class SettlePop : MonoBehaviour {
 	public Text collectDouble;
 	public Text gold;
 	public Button doubleBtn;
+	public GameObject turnTable;
+	public GameObject rankPop;
 
 	// Use this for initialization
 	void Start () {
@@ -42,14 +44,20 @@ public class SettlePop : MonoBehaviour {
 
 	public void OnCollectBtn(){
 		PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt("gold",0) + PlayerPrefs.GetInt ("CurGold", 0) );
-		PlayerControllerSky.GameEnd ();
+		//PlayerControllerSky.GameEnd ();
+		turnTable.SetActive(true);
+		rankPop.SetActive (false);
+		gameObject.SetActive (false);
 	}
 
 	public void OnDoubleBtn(){
 		TGSDK.ShowAd (TZ_TGSDK.doubleID);
 		TGSDK.AdCompleteCallback = (string obj) => {
 			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + PlayerPrefs.GetInt ("CurGold", 0) * 2);
-			PlayerControllerSky.GameEnd ();
+			//PlayerControllerSky.GameEnd ();
+			turnTable.SetActive(true);
+			rankPop.SetActive (false);
+			gameObject.SetActive (false);
 		};
 		TGSDK.AdCloseCallback = (string obj) => {
 			OnCollectBtn();

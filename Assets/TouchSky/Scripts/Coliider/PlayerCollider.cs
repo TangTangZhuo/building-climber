@@ -11,10 +11,12 @@ public class PlayerCollider : MonoBehaviour {
 
 	public GameObject progress;
 	public GameObject rankPop;
+	public GameObject turnTable;
 	public GameObject RevivePop;
 	public Transform BG;
 
 	bool isRevive = false;
+	bool isWin = false;
 	// Use this for initialization
 	void Start () {
 		throwHook = GetComponent<ThrowHook> ();
@@ -83,7 +85,7 @@ public class PlayerCollider : MonoBehaviour {
 	}
 
 	void GetReward(){
-		
+		ProgressSlider.Instance.AddTreasure (1);
 	}
 
 	public void GameOverPre(){
@@ -111,7 +113,9 @@ public class PlayerCollider : MonoBehaviour {
 				if (time > 3.5f) {
 					Instantiate (ParticleManager.Instance.particle_playerDead, transform.position, transform.rotation);
 					Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
-					GameOverPre ();
+					if (!isWin) {
+						GameOverPre ();
+					}
 					yield break;
 				}
 			} else {
@@ -122,6 +126,7 @@ public class PlayerCollider : MonoBehaviour {
 	}
 
 	void GameWin(){
+		isWin = true;
 		throwHook.isStart = false;
 		PlayerPrefs.SetInt("Rank", ProgressSlider.Instance.GetRankNumber ());
 
@@ -145,6 +150,9 @@ public class PlayerCollider : MonoBehaviour {
 
 		progress.SetActive (false);
 		rankPop.SetActive (true);
+
+		transform.GetComponent<CircleCollider2D> ().enabled = false;
+		//turnTable.SetActive(true);
 		if (throwHook.hookTarget) {
 			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
 		}

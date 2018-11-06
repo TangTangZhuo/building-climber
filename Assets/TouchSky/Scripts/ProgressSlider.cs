@@ -11,6 +11,10 @@ public class ProgressSlider : MonoBehaviour {
 
 	public Text curGold;
 
+	public Text treasure;
+	[HideInInspector]
+	public int treasureNum = 0;
+
 	public int goldSum = 0;
 
 	Transform player;
@@ -68,6 +72,10 @@ public class ProgressSlider : MonoBehaviour {
 		}
 		return index;
 	}
-		
+
+	public void AddTreasure(int number){
+		treasureNum+=number;
+		treasure.text = treasureNum.ToString ();
+	}
 
 }

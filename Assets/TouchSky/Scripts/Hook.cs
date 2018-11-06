@@ -62,6 +62,8 @@ public class Hook : MonoBehaviour {
 
 				StartCoroutine (throwHook.ChangeRocketColor (target));
 
+				target.Find ("Rocket").gameObject.SetActive (true);
+
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);
 				target.GetComponent<FlyController> ().speed = PlayerPrefs.GetFloat ("speedUpValue", 15);
 				coll.tag = "curRocket";
