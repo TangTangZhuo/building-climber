@@ -52,6 +52,7 @@ public class RocketCollider : MonoBehaviour {
 						Instantiate (ParticleManager.Instance.particle_Gift, coll.transform.position, coll.transform.rotation);
 						Destroy (coll.gameObject);
 						GetReward ();
+						GameObject.Find ("FlyTreasureRun").GetComponent<FlyGold> ().FlyGoldGenerate (1);
 					}
 				}
 				

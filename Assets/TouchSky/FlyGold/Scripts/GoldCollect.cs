@@ -27,9 +27,18 @@ public class GoldCollect : MonoBehaviour {
 		if (col.tag == "goldCollider") {
 			goldImage.DOScale (new Vector3 (1.2f, 1.2f, 1.2f), 0.2f).OnComplete(()=>{
 				goldImage.DOScale (1f, 0.2f);
+				TurnTable.Instance.AddMultiText();
 				Destroy(gameObject);
 			});
 		}
+
+		if (col.tag == "Treasure") {
+			goldImage.DOScale (new Vector3 (1.2f, 1.2f, 1.2f), 0.2f).OnComplete(()=>{
+				goldImage.DOScale (1f, 0.2f);
+				Destroy(gameObject);
+			});
+		}
+
 
 	}
 }

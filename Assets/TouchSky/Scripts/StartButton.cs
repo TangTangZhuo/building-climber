@@ -26,10 +26,12 @@ public class StartButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		distance = 350 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
-
+		//distance = 350 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
+		distance = 50;
 		//ProgressSlider.Instance.slider.maxValue = distance;
 		//ProgressSlider.Instance.slider.minValue = GameObject.FindGameObjectWithTag ("Player").transform.position.y;
+
+
 	}
 	
 	// Update is called once per frame

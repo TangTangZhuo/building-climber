@@ -95,14 +95,15 @@ public class Hook : MonoBehaviour {
 
 	IEnumerator GenerateGold(int num,int gold,float time){
 		while (num > 0) {
-			Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
+			//Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
+			Vector3 pos = transform.position;
 			GameObject go = Instantiate (addGoldText, pos, Quaternion.identity,GameObject.Find("Canvas").transform);
 			Text goText = go.GetComponent<Text> ();
 			goText.text = "$"+Conversion.UnitChange(gold);
 			goText.DOFade (0.5f, time).OnComplete(()=>{
 				Destroy(go);
 			});
-			goText.transform.DOLocalMove (new Vector3 (0, -400, 0), time, false);
+			goText.transform.DOLocalMove (transform.position+new Vector3(0,-500,0), time, false);
 
 			progress.goldSum += gold;
 			progress.curGold.text ="$" + Conversion.UnitChange (progress.goldSum);

@@ -15,12 +15,16 @@ public class TurnTable : MonoBehaviour {
 	public Needle needle;
 	//获取转转盘所需金币
 	public Text goldText;
+	//获取转盘倍数显示
+	public Text multiText;
 	//获取转盘元素集合
 	public Transform turnTable;
 	//获取按钮
 	public GameObject turnBtn;
 	public GameObject goldBtn;
 	public GameObject backBtn;
+
+	public FlyGold flyTreasure;
 
 	//本局获得金币数
 	int curGold = 0;
@@ -30,16 +34,39 @@ public class TurnTable : MonoBehaviour {
 	//转盘是否结束旋转
 	bool isFinish = false;
 
+
 	//转盘元素倍数
 	float[] multiple = new float[]{1.5f,0.5f,1,1.25f,0.75f,1};
 	//转盘元素金币数
 	int[] golds;
+	//宝箱数量
+	int treasureNum = 0;
+	//宝箱数量UI显示
+	int treasureText = 0;
+
+	//是否再次看过广告
+	bool isWatchAD = false;
+	//是否观看广告
+	bool isFirstAD = false;
+
+	//单例
+	static TurnTable instance;
+	public static TurnTable Instance{
+		get{ return instance;}
+	}
+	void Awake(){
+		instance = this;
+	}
 
 	//初始化
 	void OnEnable () {
 		curGold = PlayerPrefs.GetInt ("CurGold", 0);
 		holdGold = PlayerPrefs.GetInt ("gold", 0);
 		goldText.text = Conversion.UnitChange(curGold);
+		treasureNum = ProgressSlider.Instance.treasureNum;
+		//treasureNum = 3;
+		multiText.text = "×" + 0;
+
 		rotation.RotationFinish +=()=>{ 
 			RotateFinish ();
 		};
@@ -48,6 +75,12 @@ public class TurnTable : MonoBehaviour {
 		};
 			
 		InitTable (curGold);
+
+		flyTreasure.FlyGoldGenerate (treasureNum);
+	}
+
+	public void AddMultiText(){
+		multiText.text = "×" + (++treasureText);
 	}
 
 	//更新转盘元素
@@ -62,15 +95,28 @@ public class TurnTable : MonoBehaviour {
 	//点击广告旋转按钮
 	public void OnTurnBtn(){
 		if (TGSDK.CouldShowAd (TZ_TGSDK.turnTableID)) {
-			TGSDK.ShowAd (TZ_TGSDK.turnTableID);
+			
+			if (!isWatchAD) {
+				TGSDK.ShowAd (TZ_TGSDK.turnTableID);
+			} else {
+				if (TGSDK.CouldShowAd (TZ_TGSDK.turnTableID)) {
+					TGSDK.ShowAd (TZ_TGSDK.turnAgainID);
+				} else {
+					TipPop.GenerateTip ("no ads", 0.5f);
+				}
+			}
+
 			HideBtn ();
 
 
-			TGSDK.AdCompleteCallback = (string obj) => {				
-				rotation.RotateThis();
-			};
+//			TGSDK.AdCompleteCallback = (string obj) => {				
+//				rotation.RotateThis();
+//				isFirstAD = true;
+//			};
 			TGSDK.AdCloseCallback = (string obj) => {
-				OnBackBtn();
+				PlayerPrefs.SetInt("flyGold",1);
+				rotation.RotateThis();
+				isFirstAD = true;
 			};
 			TGSDK.AdRewardFailedCallback = (string obj) => {
 				OnBackBtn();
@@ -91,6 +137,7 @@ public class TurnTable : MonoBehaviour {
 			PlayerPrefs.SetInt ("gold", holdGold - curGold);
 			rotation.RotateThis ();
 			HideBtn ();
+			isWatchAD = true;
 		} else {
 			TipPop.GenerateTip ("not enough money", 0.5f);
 		}
@@ -113,10 +160,16 @@ public class TurnTable : MonoBehaviour {
 		if (isFinish) {
 			if (coll.name.StartsWith ("item")) {
 				int index = int.Parse(coll.name.Split (new char[]{ 'm' }) [1]);
-				PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + golds [index]);
+				PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + golds [index]*treasureNum);
 				isFinish = false;
 
-				OnBackBtn ();
+				//看过广告更新UI信息
+				UpdateUIState ();
+
+				//第一次看广告不处理，第二次看广告退出转盘
+				if (isWatchAD) {
+					OnBackBtn ();
+				}
 
 			}else{
 				rotation.RotateLittle ();
@@ -125,9 +178,29 @@ public class TurnTable : MonoBehaviour {
 		}
 	}
 
+	//旋转时隐藏按钮
 	void HideBtn(){
 		backBtn.SetActive (false);
 		goldBtn.SetActive (false);
 		turnBtn.SetActive (false);
+	}
+
+	//看完广告后更新UI
+	void UpdateUIState(){
+		if (isFirstAD) {
+			if (!isWatchAD) {
+				backBtn.transform.position = goldBtn.transform.position;
+				backBtn.SetActive (true);
+				turnBtn.SetActive (true);
+				turnBtn.GetComponentInChildren<Text> ().text = "Turn AGAIN";
+				isWatchAD = true;
+			}
+		}
+	}
+
+
+	//再次旋转
+	public void TurnAgain(){
+		
 	}
 }

@@ -44,23 +44,36 @@ public class SettlePop : MonoBehaviour {
 
 	public void OnCollectBtn(){
 		PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt("gold",0) + PlayerPrefs.GetInt ("CurGold", 0) );
-		//PlayerControllerSky.GameEnd ();
-		turnTable.SetActive(true);
+
 		rankPop.SetActive (false);
 		gameObject.SetActive (false);
+		if (ProgressSlider.Instance.treasureNum > 0) {
+			turnTable.SetActive (true);
+		} else {
+			PlayerControllerSky.GameEnd ();
+		}
+
 	}
 
 	public void OnDoubleBtn(){
 		TGSDK.ShowAd (TZ_TGSDK.doubleID);
-		TGSDK.AdCompleteCallback = (string obj) => {
+//		TGSDK.AdCompleteCallback = (string obj) => {
+//			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + PlayerPrefs.GetInt ("CurGold", 0) * 2);
+//			//PlayerControllerSky.GameEnd ();
+//			turnTable.SetActive(true);
+//			rankPop.SetActive (false);
+//			gameObject.SetActive (false);
+//		};
+		TGSDK.AdCloseCallback = (string obj) => {
 			PlayerPrefs.SetInt ("gold", PlayerPrefs.GetInt ("gold", 0) + PlayerPrefs.GetInt ("CurGold", 0) * 2);
-			//PlayerControllerSky.GameEnd ();
-			turnTable.SetActive(true);
+			PlayerPrefs.SetInt("flyGold",1);
 			rankPop.SetActive (false);
 			gameObject.SetActive (false);
-		};
-		TGSDK.AdCloseCallback = (string obj) => {
-			OnCollectBtn();
+			if (ProgressSlider.Instance.treasureNum > 0) {
+				turnTable.SetActive (true);
+			} else {
+				PlayerControllerSky.GameEnd ();
+			}
 		};
 		TGSDK.AdRewardFailedCallback = (string obj) => {
 			OnCollectBtn();

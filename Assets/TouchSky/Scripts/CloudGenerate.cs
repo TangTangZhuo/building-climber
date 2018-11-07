@@ -31,7 +31,7 @@ public class CloudGenerate : MonoBehaviour {
 	void Update () {
 		Generate (5, smallCount, smallParent, cloud_small);
 		Generate (2, bigCount, bigParent, cloud_big);
-		Generate (1, balloonCount, balloonParent, balloon);
+		Generate (6, balloonCount, balloonParent, balloon);
 	}
 		
 

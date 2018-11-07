@@ -12,6 +12,8 @@ public class RevivePop : MonoBehaviour {
 
 	ThrowHook throwHook;
 
+	private IEnumerator CountDownCoroutine;
+
 	float time = 6;
 
 	void OnEnable(){
@@ -23,7 +25,8 @@ public class RevivePop : MonoBehaviour {
 		throwHook = GameObject.FindGameObjectWithTag ("Player").GetComponent<ThrowHook> ();
 		throwHook.isStart = false;
 
-		StartCoroutine (CountDown ());
+		CountDownCoroutine = CountDown ();
+		StartCoroutine (CountDownCoroutine);
 	}
 
 	public void OnBackBtn(){
@@ -32,19 +35,22 @@ public class RevivePop : MonoBehaviour {
 	}
 
 	public void OnConfirmBtn(){
-		TGSDK.ShowAd (TZ_TGSDK.reviveID);
-		TGSDK.AdCompleteCallback = (string obj) => {
-			Revive();
-		};
-		TGSDK.AdCloseCallback = (string obj) => {
-			OnBackBtn();
-		};
-		TGSDK.AdShowFailedCallback = (string obj) => {
-			OnBackBtn();
-		};
-		TGSDK.AdRewardFailedCallback = (string obj) => {
-			OnBackBtn();
-		};
+//		StopCoroutine (CountDownCoroutine);
+//		TGSDK.ShowAd (TZ_TGSDK.reviveID);
+////		TGSDK.AdCompleteCallback = (string obj) => {
+////			Revive();
+////		};
+//		TGSDK.AdCloseCallback = (string obj) => {
+//			Revive();
+//		};
+//		TGSDK.AdShowFailedCallback = (string obj) => {
+//			OnBackBtn();
+//		};
+//		TGSDK.AdRewardFailedCallback = (string obj) => {
+//			OnBackBtn();
+//		};
+
+		Revive();
 	}
 
 	void Revive(){

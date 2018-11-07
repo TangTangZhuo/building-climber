@@ -19,13 +19,8 @@ public class TZ_TGSDK : MonoBehaviour {
 	string appID = "";
 
 	#endif
-	static TZ_TGSDK instance;
-	public static TZ_TGSDK Instance{
-		get{return instance;}
-	}
 
 	void Awake(){
-		instance = this;
 
 		TGSDK.Initialize (appID);
 		TGSDK.PreloadAd ();

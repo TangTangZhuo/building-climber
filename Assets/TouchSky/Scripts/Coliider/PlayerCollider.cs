@@ -14,6 +14,8 @@ public class PlayerCollider : MonoBehaviour {
 	public GameObject turnTable;
 	public GameObject RevivePop;
 	public Transform BG;
+	public FlyGold flyTreasureRun;
+	public FlyGold flyGold;
 
 	bool isRevive = false;
 	bool isWin = false;
@@ -23,6 +25,11 @@ public class PlayerCollider : MonoBehaviour {
 		rig2D = GetComponent<Rigidbody2D> ();
 		sr = GetComponent<SpriteRenderer> ();
 		StartCoroutine (UpdateDrop ());
+
+		if (PlayerPrefs.GetInt ("flyGold", 0) == 1) {
+			flyGold.FlyGoldGenerate ();
+		}
+		PlayerPrefs.SetInt("flyGold",0);
 	}
 
 
@@ -58,6 +65,7 @@ public class PlayerCollider : MonoBehaviour {
 
 		if (coll.tag == "balloon") {
 			Instantiate (ParticleManager.Instance.particle_Gift, coll.transform.position, coll.transform.rotation);
+			flyTreasureRun.FlyGoldGenerate (1);
 			Destroy (coll.gameObject);
 			GetReward ();
 		}
@@ -155,6 +163,7 @@ public class PlayerCollider : MonoBehaviour {
 		//turnTable.SetActive(true);
 		if (throwHook.hookTarget) {
 			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
+			print ("RocketCollider");
 		}
 
 		PlayerPrefs.SetInt ("curLevel", PlayerPrefs.GetInt ("curLevel", 1)+1);
