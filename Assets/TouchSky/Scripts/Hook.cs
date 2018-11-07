@@ -52,7 +52,7 @@ public class Hook : MonoBehaviour {
 
 				target.Find ("sprinting").gameObject.SetActive (true);
 				coll.GetComponent<PolygonCollider2D> ().enabled = false;
-				StartCoroutine (ResetRocket (target, coll, (PlayerPrefs.GetFloat ("speedUpValue", 15)-PlayerPrefs.GetFloat ("maxSpeedValue", 5))/8f));
+				StartCoroutine (ResetRocket (target, coll, (PlayerPrefs.GetFloat ("speedUpValue", 15)-PlayerPrefs.GetFloat ("maxSpeedValue", 7))/8f));
 
 				MultiHaptic.HapticHeavy ();
 				MultiHaptic.HapticMedium ();

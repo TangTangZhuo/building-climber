@@ -55,6 +55,10 @@ public class RocketCollider : MonoBehaviour {
 						GameObject.Find ("FlyTreasureRun").GetComponent<FlyGold> ().FlyGoldGenerate (1);
 					}
 				}
+				if (coll.tag == "Terminal") {
+					transform.GetComponent<PolygonCollider2D> ().enabled = false;
+				}
+
 				
 				
 				}

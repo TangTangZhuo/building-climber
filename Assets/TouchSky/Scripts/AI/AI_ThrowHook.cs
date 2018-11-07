@@ -171,7 +171,13 @@ public class AI_ThrowHook : MonoBehaviour {
 			if (gameState == AIState.isHooking) {				
 				if (hookTarget) {						
 					FlyController flyController = hookTarget.GetComponent<FlyController> ();
-					if (flyController.speed > (5 + (PlayerPrefs.GetInt ("curLevel", 1) - 1) * 0.05f)) {
+					float aiSpeed = 5;
+					if (PlayerPrefs.GetInt ("curLevel", 1) <= 5) {
+						aiSpeed = 5;
+					} else {
+						aiSpeed = 10;
+					}
+					if (flyController.speed > (aiSpeed + (PlayerPrefs.GetInt ("curLevel", 1) - 1) * 0.05f)) {
 						flyController.speed -= Time.deltaTime * 8;
 					}
 //					if (flyController.speed <= 10 && flyController.speed > 1) {
@@ -337,7 +343,7 @@ public class AI_ThrowHook : MonoBehaviour {
 		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
 		MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
 
-		Material[] materials = new Material[]{ RocketColorManager.Instance.normal, GetRocketMaterial(transform.name)};
+		Material[] materials = new Material[]{ GetRocketMaterial(transform.name), GetRocketMaterial(transform.name)};
 		rightFootMat.materials = materials;
 		LeftFootMat.materials = materials;
 		DownMat.materials = materials;

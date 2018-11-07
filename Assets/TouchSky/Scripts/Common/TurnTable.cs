@@ -116,7 +116,12 @@ public class TurnTable : MonoBehaviour {
 			TGSDK.AdCloseCallback = (string obj) => {
 				PlayerPrefs.SetInt("flyGold",1);
 				rotation.RotateThis();
+
+					
+				
 				isFirstAD = true;
+
+
 			};
 			TGSDK.AdRewardFailedCallback = (string obj) => {
 				OnBackBtn();
@@ -135,9 +140,11 @@ public class TurnTable : MonoBehaviour {
 	public void OnGoldBtn(){
 		if (holdGold >= curGold) {
 			PlayerPrefs.SetInt ("gold", holdGold - curGold);
+			PlayerPrefs.SetInt("flyGold",1);
 			rotation.RotateThis ();
 			HideBtn ();
 			isWatchAD = true;
+
 		} else {
 			TipPop.GenerateTip ("not enough money", 0.5f);
 		}
@@ -168,8 +175,10 @@ public class TurnTable : MonoBehaviour {
 
 				//第一次看广告不处理，第二次看广告退出转盘
 				if (isWatchAD) {
-					OnBackBtn ();
+					Invoke ("OnBackBtn", 0.5f);
+
 				}
+				isWatchAD = true;
 
 			}else{
 				rotation.RotateLittle ();
@@ -193,7 +202,6 @@ public class TurnTable : MonoBehaviour {
 				backBtn.SetActive (true);
 				turnBtn.SetActive (true);
 				turnBtn.GetComponentInChildren<Text> ().text = "Turn AGAIN";
-				isWatchAD = true;
 			}
 		}
 	}

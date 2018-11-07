@@ -94,7 +94,7 @@ public class Skill : MonoBehaviour {
 
 	//购买最大速度
 	public void OnMaxBuyBtn(){		
-		float foreSpeed = PlayerPrefs.GetFloat ("maxSpeedValue", 5);
+		float foreSpeed = PlayerPrefs.GetFloat ("maxSpeedValue", 7);
 		float afterSpeed = foreSpeed + 0.25f;
 		int price = PlayerPrefs.GetInt ("maxSpeedPrice", 1000);
 		int lvl = PlayerPrefs.GetInt ("maxSpeedLvl", 1);
@@ -150,7 +150,7 @@ public class Skill : MonoBehaviour {
 		moneyEarningLvl.text = "LVL." + PlayerPrefs.GetInt ("moneyEarningLvl", 1).ToString ();
 
 		//Value
-		maxSpeedValue.text = (PlayerPrefs.GetFloat ("maxSpeedValue", 5)*10).ToString () + " MPH";
+		maxSpeedValue.text = (PlayerPrefs.GetFloat ("maxSpeedValue", 7)*10).ToString () + " MPH";
 		speedUpValue.text = PlayerPrefs.GetFloat ("speedUpValue", 15).ToString () + " G";
 		moneyEarningValue.text = PlayerPrefs.GetInt ("moneyEarningValue", 10).ToString () + " X";
 

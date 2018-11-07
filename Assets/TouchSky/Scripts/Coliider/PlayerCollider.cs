@@ -161,10 +161,10 @@ public class PlayerCollider : MonoBehaviour {
 
 		transform.GetComponent<CircleCollider2D> ().enabled = false;
 		//turnTable.SetActive(true);
-		if (throwHook.hookTarget) {
-			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
-			print ("RocketCollider");
-		}
+//		if (throwHook.hookTarget) {
+//			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
+//
+//		}
 
 		PlayerPrefs.SetInt ("curLevel", PlayerPrefs.GetInt ("curLevel", 1)+1);
 	}

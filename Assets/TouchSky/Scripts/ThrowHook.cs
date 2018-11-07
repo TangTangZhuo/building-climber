@@ -60,8 +60,6 @@ public class ThrowHook : MonoBehaviour {
 
 		StartCoroutine ("PunchTrans");
 
-		PlayerPrefs.SetFloat ("maxSpeedValue", 7);
-
 		mainCamera = Camera.main;
 	}
 		
@@ -120,7 +118,7 @@ public class ThrowHook : MonoBehaviour {
 					if (hookTarget) {
 						float mouseDetal = mousePos.x - Camera.main.ScreenToViewportPoint (Input.mousePosition).x;
 						FlyController flyController = hookTarget.GetComponent<FlyController> ();
-						if (flyController.speed > PlayerPrefs.GetFloat ("maxSpeedValue", 5)) {
+						if (flyController.speed > PlayerPrefs.GetFloat ("maxSpeedValue", 7)) {
 							flyController.speed -= Time.deltaTime * 8;
 						}
 //						if (flyController.speed <= 10&&flyController.speed>1) {
@@ -245,15 +243,21 @@ public class ThrowHook : MonoBehaviour {
 
 
 	public IEnumerator ChangeRocketColor(Transform rocket){
+//		Vector3 doodlePos = curHook.transform.position;
+//		Vector3 doodleDir = curHook.transform.position - transform.position;
+//		Color color = Color.red;
+//		SpawnByPos.Instance.SpawnDoodle (rocket.Find("doodle"));
+
+
 		MeshRenderer rightFootMat = rocket.Find ("rocket3D").Find ("RightFoot").GetComponent<MeshRenderer>();
 		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
-		MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
+		//MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
 
 
-		Material[] materials = new Material[]{ RocketColorManager.Instance.normal, RocketColorManager.Instance.color1 };
+		Material[] materials = new Material[]{ RocketColorManager.Instance.color1, RocketColorManager.Instance.color1 };
 		rightFootMat.materials = materials;
 		LeftFootMat.materials = materials;
-		DownMat.materials = materials;
+		//DownMat.materials = materials;
 
 //		float thresholdY = -8.5f;
 //		while (thresholdY > -7.1f) {
