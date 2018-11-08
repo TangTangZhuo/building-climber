@@ -16,6 +16,9 @@ public class RocketGenerate : MonoBehaviour {
 	GameObject[] parents;
 	public int rocketCount = 0;
 	Vector3 generatePos;
+
+	Vector3 ViewLB = Vector3.zero;
+	Vector3 ViewRU = Vector3.zero;
 	// Use this for initialization
 	void Awake () {
 		parents = new GameObject[AIs.Length];
@@ -25,8 +28,14 @@ public class RocketGenerate : MonoBehaviour {
 		}
 		maxTrans = MaxPlayer ();
 		minTrans = MinPlayer ();
-	}
 	
+	}
+
+	void Start(){
+		ViewLB = Camera.main.ViewportToWorldPoint (new Vector3(0,0,0));
+		ViewRU =  Camera.main.ViewportToWorldPoint (new Vector3(1,1,1));
+	}
+
 	// Update is called once per frame
 	void Update () {
 		FinalGenetateRocket ();
@@ -89,8 +98,10 @@ public class RocketGenerate : MonoBehaviour {
 	void GenerateRocket(int number,Transform pos,Transform parent){
 		rocketCount = parent.childCount;
 		if (rocketCount < number) {
-			Vector3 rangeV3 = new Vector3 (Random.Range (-9f, 9f), Random.Range (-10f, 24f), 0);
-			generatePos = new Vector3 (transform.position.x, pos.position.y, pos.position.z) + rangeV3;
+			
+			Vector3 rangeV3 = new Vector3 (Random.Range ((ViewLB.x-ViewRU.x)/1.5f,(ViewRU.x-ViewLB.x)/1.5f), 
+				Random.Range (ViewRU.y, ViewRU.y*4), 0);
+			generatePos = new Vector3 (pos.position.x, pos.position.y, pos.position.z) + rangeV3;
 			GameObject go = GameObject.Instantiate (rocket, generatePos, rocket.transform.rotation, parent);
 			go.GetComponent<FlyController> ().speed = Random.Range (1f, 6f);
 			go.GetComponent<SpriteRenderer> ().DOFade (1, 0.3f).OnComplete(()=>{

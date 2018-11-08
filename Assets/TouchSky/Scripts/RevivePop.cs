@@ -35,22 +35,21 @@ public class RevivePop : MonoBehaviour {
 	}
 
 	public void OnConfirmBtn(){
-//		StopCoroutine (CountDownCoroutine);
-//		TGSDK.ShowAd (TZ_TGSDK.reviveID);
-////		TGSDK.AdCompleteCallback = (string obj) => {
-////			Revive();
-////		};
-//		TGSDK.AdCloseCallback = (string obj) => {
+		StopCoroutine (CountDownCoroutine);
+		TGSDK.ShowAd (TZ_TGSDK.reviveID);
+//		TGSDK.AdCompleteCallback = (string obj) => {
 //			Revive();
 //		};
-//		TGSDK.AdShowFailedCallback = (string obj) => {
-//			OnBackBtn();
-//		};
-//		TGSDK.AdRewardFailedCallback = (string obj) => {
-//			OnBackBtn();
-//		};
+		TGSDK.AdCloseCallback = (string obj) => {
+			Revive();
+		};
+		TGSDK.AdShowFailedCallback = (string obj) => {
+			OnBackBtn();
+		};
+		TGSDK.AdRewardFailedCallback = (string obj) => {
+			OnBackBtn();
+		};
 
-		Revive();
 	}
 
 	void Revive(){

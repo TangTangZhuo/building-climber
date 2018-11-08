@@ -30,9 +30,12 @@ public class GalaxyCollider : MonoBehaviour {
 
 	void OnTriggerExit2D(Collider2D coll){
 		if (coll.tag == "Player"|| (coll.tag == "curRocket"&&throwHook.hookTarget == coll.transform.parent.parent)) {
-			if(Time.timeScale == 0.5f)
-			Time.timeScale = 1f;
-			Destroy (transform.parent.gameObject);
+			if (Time.timeScale == 0.5f)
+				Time.timeScale = 1f;
+			ParticleSystem ps = transform.parent.GetComponent<ParticleSystem> ();
+			var noise = ps.noise;
+			noise.enabled = false;
+			Destroy (transform.parent.gameObject,5);
 		}
 	}
 

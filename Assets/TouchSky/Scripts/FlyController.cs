@@ -72,11 +72,11 @@ public class FlyController : MonoBehaviour {
 
 	IEnumerator CheckDistance(){
 		while (true) {			
-			if (transform.position.y - rocketGenerate.maxTrans.position.y > 24 || rocketGenerate.minTrans.position.y - transform.position.y > 14) {			
-				Destroy (gameObject);
-			}
-			if (transform.position.y - player.position.y > 24 || player.position.y - transform.position.y > 14) {
-				transform.SetParent (otherRocket);						
+//			if (transform.position.y - rocketGenerate.maxTrans.position.y > 24 || rocketGenerate.minTrans.position.y - transform.position.y > 14) {			
+//				Destroy (gameObject);
+//			}
+			if (player.position.y - transform.position.y > 5 ||transform.position.y- player.position.y   > 60 ) {
+				Destroy (gameObject);					
 			}
 			yield return new WaitForSeconds (0.2f);
 		}
