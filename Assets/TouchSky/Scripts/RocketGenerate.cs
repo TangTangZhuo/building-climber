@@ -90,7 +90,7 @@ public class RocketGenerate : MonoBehaviour {
 		rocketCount = parent.childCount;
 		if (rocketCount < number) {
 			Vector3 rangeV3 = new Vector3 (Random.Range (-9f, 9f), Random.Range (-10f, 24f), 0);
-			generatePos = new Vector3 (transform.position.x, pos.position.y, transform.position.z) + rangeV3;
+			generatePos = new Vector3 (transform.position.x, pos.position.y, pos.position.z) + rangeV3;
 			GameObject go = GameObject.Instantiate (rocket, generatePos, rocket.transform.rotation, parent);
 			go.GetComponent<FlyController> ().speed = Random.Range (1f, 6f);
 			go.GetComponent<SpriteRenderer> ().DOFade (1, 0.3f).OnComplete(()=>{
