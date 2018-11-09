@@ -12,6 +12,9 @@ public class RocketColorManager : MonoBehaviour {
 	public Material color6;
 	public Material normal;
 
+	public Transform screenLeft;
+	public Transform screenRight;
+
 	static RocketColorManager instance;
 	public static RocketColorManager Instance{
 		get{ return instance;}

@@ -58,6 +58,10 @@ public class RevivePop : MonoBehaviour {
 		if (throwHook.curHook) {
 			Destroy (throwHook.curHook);
 		}
+		if (throwHook.drawCircleObj) {
+			Destroy (throwHook.drawCircleObj);
+		}
+		throwHook.radius = 3;
 		throwHook.GenerateCircle ();
 		throwHook.isStart = true;
 		Instantiate (startRocket, throwHook.transform.position+Vector3.up, Quaternion.identity);

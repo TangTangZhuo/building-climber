@@ -175,7 +175,7 @@ public class AI_ThrowHook : MonoBehaviour {
 					if (PlayerPrefs.GetInt ("curLevel", 1) <= 5) {
 						aiSpeed = 5;
 					} else {
-						aiSpeed = 10;
+						aiSpeed = 15;
 					}
 					if (flyController.speed > (aiSpeed + (PlayerPrefs.GetInt ("curLevel", 1) - 1) * 0.05f)) {
 						flyController.speed -= Time.deltaTime * 8;
@@ -184,8 +184,11 @@ public class AI_ThrowHook : MonoBehaviour {
 //						flyController.speed -= Time.deltaTime * 1;
 //					}
 					if (targetDirChange == 1) {
-						hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed / 3 * Time.deltaTime);
-						hookTarget.DORotate (new Vector3 (-30, 30, 30), 0.3f, RotateMode.Fast);		
+
+						if(hookTarget.eulerAngles.z<30||hookTarget.eulerAngles.z>=290){
+							hookTarget.Rotate (Vector3.forward, 5);
+						}
+
 						targetDirChangeTime += Time.deltaTime;
 						if (targetDirChangeTime > 2) {
 							targetDirChangeTime = 0;
@@ -193,8 +196,11 @@ public class AI_ThrowHook : MonoBehaviour {
 						}
 					}
 					if (targetDirChange == 2) {
-						hookTarget.position -= Vector3.left * hookTargerSpeed / 3 * Time.deltaTime;
-						hookTarget.DORotate (new Vector3 (-30, -30, -30), 0.3f, RotateMode.Fast);	
+						
+						if(hookTarget.eulerAngles.z>330||hookTarget.eulerAngles.z<=70){
+							hookTarget.Rotate (Vector3.forward, -5);
+						}
+
 						targetDirChangeTime += Time.deltaTime;
 						if (targetDirChangeTime > 2) {
 							targetDirChangeTime = 0;
@@ -203,7 +209,16 @@ public class AI_ThrowHook : MonoBehaviour {
 						}
 					}
 					if (targetDirChange == 3) {
-						hookTarget.DORotate (new Vector3 (0, 0, 0), 0.6f, RotateMode.Fast);	
+						
+
+						if (hookTarget.eulerAngles.z <= 70 && hookTarget.eulerAngles.z >= 10) {
+							hookTarget.Rotate (Vector3.forward, -4);
+						} else if (hookTarget.eulerAngles.z >= 290 && hookTarget.eulerAngles.z <= 350) {
+							hookTarget.Rotate (Vector3.forward, 4);
+						} else {
+							hookTarget.eulerAngles = Vector3.zero;
+						}
+
 						targetDirChangeTime += Time.deltaTime;
 						if (targetDirChangeTime > 2) {
 							targetDirChangeTime = 0;
@@ -338,15 +353,18 @@ public class AI_ThrowHook : MonoBehaviour {
 	}
 
 	public IEnumerator ChangeRocketColor(Transform rocket){
-		
-		MeshRenderer rightFootMat = rocket.Find ("rocket3D").Find ("RightFoot").GetComponent<MeshRenderer>();
-		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
-		MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
 
-		Material[] materials = new Material[]{ GetRocketMaterial(transform.name), GetRocketMaterial(transform.name)};
-		rightFootMat.materials = materials;
-		LeftFootMat.materials = materials;
-		DownMat.materials = materials;
+		MeshRenderer up1 = rocket.Find ("RocketNew").Find ("C_up1").GetComponent<MeshRenderer>();
+		MeshRenderer down2 = rocket.Find ("RocketNew").Find ("C_down2").GetComponent<MeshRenderer>();
+		MeshRenderer left = rocket.Find ("RocketNew").Find ("C_left").GetComponent<MeshRenderer>();
+		MeshRenderer right = rocket.Find ("RocketNew").Find ("C_right").GetComponent<MeshRenderer>();
+
+
+		Material[] materials = new Material[]{ GetRocketMaterial(transform.name)};
+		up1.materials = materials;
+		down2.materials = materials;
+		left.materials = materials;
+		right.materials = materials;
 
 		yield return null;
 

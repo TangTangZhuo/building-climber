@@ -11,7 +11,7 @@ public class DestroyDownScreen : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {		
-		if (player.position.y - transform.position.y > 12) {
+		if (player.position.y - transform.position.y > 8) {
 			Destroy (gameObject);
 		}
 	}

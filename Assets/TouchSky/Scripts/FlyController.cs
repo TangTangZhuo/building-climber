@@ -13,7 +13,13 @@ public class FlyController : MonoBehaviour {
 
 	AI_ThrowHook[] ai_throwHooks;
 
+	float screenLeft = 0;
+	float screenRight = 0;
+		
 	void Start () {
+		screenLeft = RocketColorManager.Instance.screenLeft.position.x;
+		screenRight = RocketColorManager.Instance.screenRight.position.x;
+
 		GameObject[] objs = GameObject.FindGameObjectsWithTag ("AI");
 		ai_throwHooks = new AI_ThrowHook[objs.Length];
 		for (int i = 0; i < objs.Length; i++) {
@@ -37,15 +43,15 @@ public class FlyController : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (transform.position.x < -10.5f) {
-			transform.position = new Vector3 (-10.5f, transform.position.y, transform.position.z);
+		if (transform.position.x < screenLeft) {
+			transform.position = new Vector3 (screenLeft, transform.position.y, transform.position.z);
 		}
-		if (transform.position.x > 7.5f) {
-			transform.position = new Vector3 (7.5f, transform.position.y, transform.position.z);
+		if (transform.position.x > screenRight) {
+			transform.position = new Vector3 (screenRight, transform.position.y, transform.position.z);
 		}
 		//transform.position += Vector3.up * speed * Time.deltaTime;
 
-		transform.position = Vector3.Lerp (transform.position, transform.position + Vector3.up, speed * Time.deltaTime);
+		transform.position = Vector3.Lerp (transform.position, transform.position + transform.up, speed * Time.deltaTime);
 
 //			if (ai_throwHook && ai_throwHook.hookTarget == transform) {				
 //			}else if(throwHook && throwHook.hookTarget == transform){				

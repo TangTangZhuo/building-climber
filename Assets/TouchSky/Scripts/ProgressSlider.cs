@@ -41,7 +41,7 @@ public class ProgressSlider : MonoBehaviour {
 		ranking = transform.Find("Ranking").GetComponent<Text> ();
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
 		AIs = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<RocketGenerate> ().AIs;
-		float distance = 350 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
+		float distance = 200 + PlayerPrefs.GetInt ("curLevel", 1) * 2;
 		slider.maxValue = distance;
 		slider.minValue = GameObject.FindGameObjectWithTag ("Player").transform.position.y;
 		curGold.text = "$" + 0;

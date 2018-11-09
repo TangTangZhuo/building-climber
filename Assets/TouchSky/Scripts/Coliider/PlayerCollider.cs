@@ -72,6 +72,7 @@ public class PlayerCollider : MonoBehaviour {
 
 		if (coll.tag == "Terminal") {
 			GameWin ();
+			Destroy (flyTreasureRun.gameObject);
 		}
 
 		if (coll.tag == "BGTrigger") {
@@ -118,7 +119,7 @@ public class PlayerCollider : MonoBehaviour {
 		while (true) {
 			if (rig2D.velocity.y < -8) {
 				time += Time.deltaTime;
-				if (time > 3.5f) {
+				if (time > 2f) {
 					Instantiate (ParticleManager.Instance.particle_playerDead, transform.position, transform.rotation);
 					Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 					if (!isWin) {

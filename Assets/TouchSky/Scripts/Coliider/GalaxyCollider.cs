@@ -25,6 +25,14 @@ public class GalaxyCollider : MonoBehaviour {
 				noise.enabled = true;
 				Time.timeScale = 0.5f;
 			}
+				
+			if(transform.name == "1"){
+				CloudGenerate.Instance.areaIndex = 2;
+			}
+			if(transform.name == "2"){
+				CloudGenerate.Instance.areaIndex = 3;
+			}
+			CloudGenerate.Instance.DestroyObstacle ();
 		}
 	}
 
@@ -32,9 +40,6 @@ public class GalaxyCollider : MonoBehaviour {
 		if (coll.tag == "Player"|| (coll.tag == "curRocket"&&throwHook.hookTarget == coll.transform.parent.parent)) {
 			if (Time.timeScale == 0.5f)
 				Time.timeScale = 1f;
-			ParticleSystem ps = transform.parent.GetComponent<ParticleSystem> ();
-			var noise = ps.noise;
-			noise.enabled = false;
 			Destroy (transform.parent.gameObject,5);
 		}
 	}

@@ -9,6 +9,7 @@ public class StartButton : MonoBehaviour {
 	public Transform BGTrigger;
 	public GameObject Progress;
 	public GameObject Skill;
+	public GameObject Name;
 
 	[HideInInspector]
 	public float distance = 0;
@@ -44,6 +45,7 @@ public class StartButton : MonoBehaviour {
 		gameObject.SetActive (false);
 		Progress.SetActive (true);
 		Skill.SetActive (false);
+		Name.SetActive (false);
 		Instantiate (Terminal, new Vector3 (0, distance, 0), Terminal.transform.rotation);
 		Instantiate (BGTrigger, new Vector3 (0, distance/3, 0), Quaternion.identity);
 		Instantiate (BGTrigger, new Vector3 (0, distance/3*2, 0), Quaternion.identity);

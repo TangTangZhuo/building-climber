@@ -9,6 +9,8 @@ public class TZ_TGSDK : MonoBehaviour {
 	public static string reviveID = "6dDceGiZP4ZWYWKYlUo";
 	public static string turnTableID = "b0DJBRqDTIEygm0ALBv";
 	public static string turnAgainID = "Z6u73UsKb8RaPvW9gWr";
+	public static string offlineID = "Iok1UpcGiwLIvql26Tj";
+
 	string appID = "Ecn061LEN1087o5i312v";
 
 	#elif UNITY_ANDROID

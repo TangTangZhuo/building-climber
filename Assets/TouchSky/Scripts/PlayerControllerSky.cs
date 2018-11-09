@@ -5,18 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControllerSky : MonoBehaviour {
 
+	float screenLeft = 0;
+	float screenRight = 0;
+
 	// Use this for initialization
 	void Start () {
-		
+		screenLeft = RocketColorManager.Instance.screenLeft.position.x;
+		screenRight = RocketColorManager.Instance.screenRight.position.x;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (transform.position.x < -10.5f) {
-			transform.position = new Vector3 (-10.5f, transform.position.y, transform.position.z);
+		if (transform.position.x < screenLeft) {
+			transform.position = new Vector3 (screenLeft, transform.position.y, transform.position.z);
 		}
-		if (transform.position.x > 7.5f) {
-			transform.position = new Vector3 (7.5f, transform.position.y, transform.position.z);
+		if (transform.position.x > screenRight) {
+			transform.position = new Vector3 (screenRight, transform.position.y, transform.position.z);
 		}
 	}
 

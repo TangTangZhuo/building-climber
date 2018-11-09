@@ -103,7 +103,7 @@ public class RocketGenerate : MonoBehaviour {
 				Random.Range (ViewRU.y, ViewRU.y*4), 0);
 			generatePos = new Vector3 (pos.position.x, pos.position.y, pos.position.z) + rangeV3;
 			GameObject go = GameObject.Instantiate (rocket, generatePos, rocket.transform.rotation, parent);
-			go.GetComponent<FlyController> ().speed = Random.Range (1f, 6f);
+			go.GetComponent<FlyController> ().speed = Random.Range (1f, 4f);
 			go.GetComponent<SpriteRenderer> ().DOFade (1, 0.3f).OnComplete(()=>{
 				//go.transform.Find("RocketCollider").GetComponentInChildren<RocketCollider>().aiName = pos.name;
 				go.transform.Find("RocketCollider").gameObject.SetActive(true);

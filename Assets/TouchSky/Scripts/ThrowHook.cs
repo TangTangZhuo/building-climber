@@ -26,7 +26,8 @@ public class ThrowHook : MonoBehaviour {
 	[HideInInspector]
 	public Transform hookTarget;
 	public GameObject drawCircle;
-	GameObject drawCircleObj;
+	[HideInInspector]
+	public GameObject drawCircleObj;
 	public float hookTargerSpeed = 10;
 
 	[HideInInspector]
@@ -47,6 +48,8 @@ public class ThrowHook : MonoBehaviour {
 
 	Camera mainCamera;
 
+	float rocketRotateTime = 0;
+
 	void Awake(){
 		
 	}
@@ -54,7 +57,7 @@ public class ThrowHook : MonoBehaviour {
 	void Start () {
 		//curRocket = null;
 		radius = 3;
-		radiusChange = 0.1f;
+		radiusChange = 0.15f;
 
 		rig2D = GetComponent<Rigidbody2D> ();
 
@@ -108,7 +111,7 @@ public class ThrowHook : MonoBehaviour {
 
 				if (Input.GetMouseButtonUp (0)) {
 					gameState = GameState.isTakeBacking;
-					hookTarget.DORotate (new Vector3 (0, 0, 0), 0.5f, RotateMode.Fast);
+					//hookTarget.DORotate (new Vector3 (0, 0, 0), 0.5f, RotateMode.Fast);
 					ShootPlayer ();
 				}
 					
@@ -125,13 +128,30 @@ public class ThrowHook : MonoBehaviour {
 //							flyController.speed -= Time.deltaTime * 1;
 //						}
 						if (mouseDetal > 0.002f) {
-							hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed * Time.deltaTime);
-							hookTarget.DORotate (new Vector3 (-30, 30, 30), 0.3f, RotateMode.Fast);
+							rocketRotateTime = 0;
+							if(hookTarget.eulerAngles.z<50||hookTarget.eulerAngles.z>=290){
+								hookTarget.Rotate (Vector3.forward, 5);
+							}
+							//hookTarget.position = Vector3.Lerp (hookTarget.position, hookTarget.position + Vector3.left, hookTargerSpeed * Time.deltaTime);
+							//hookTarget.DORotate (new Vector3 (-30, 30, 30), 0.3f, RotateMode.Fast);
 						} else if (mouseDetal < -0.002f) {
-							hookTarget.position -= Vector3.left * hookTargerSpeed * Time.deltaTime;
-							hookTarget.DORotate (new Vector3 (-30, -30, -30), 0.3f, RotateMode.Fast);
+							rocketRotateTime = 0;
+							if(hookTarget.eulerAngles.z>310||hookTarget.eulerAngles.z<=70){
+								hookTarget.Rotate (Vector3.forward, -5);
+							}
+							//hookTarget.position -= Vector3.left * hookTargerSpeed * Time.deltaTime;
+							//hookTarget.DORotate (new Vector3 (-30, -30, -30), 0.3f, RotateMode.Fast);
 						} else {
-							hookTarget.DORotate (new Vector3 (0, 0, 0), 0.6f, RotateMode.Fast);
+//							rocketRotateTime += Time.deltaTime;
+//							if (rocketRotateTime > 0.5f) {
+//								if (hookTarget.eulerAngles.z <= 70 && hookTarget.eulerAngles.z >= 10) {
+//									hookTarget.Rotate (Vector3.forward, -4);
+//								} else if (hookTarget.eulerAngles.z >= 290 && hookTarget.eulerAngles.z <= 350) {
+//									hookTarget.Rotate (Vector3.forward, 4);
+//								} else {
+//									hookTarget.eulerAngles = Vector3.zero;
+//								}
+//							}
 						}
 					}
 				}
@@ -249,23 +269,20 @@ public class ThrowHook : MonoBehaviour {
 //		SpawnByPos.Instance.SpawnDoodle (rocket.Find("doodle"));
 
 
-		MeshRenderer rightFootMat = rocket.Find ("rocket3D").Find ("RightFoot").GetComponent<MeshRenderer>();
-		MeshRenderer LeftFootMat = rocket.Find ("rocket3D").Find ("LeftFoot").GetComponent<MeshRenderer>();
-		//MeshRenderer DownMat = rocket.Find ("rocket3D").Find ("Down").GetComponent<MeshRenderer>();
+		MeshRenderer up1 = rocket.Find ("RocketNew").Find ("C_up1").GetComponent<MeshRenderer>();
+		MeshRenderer down2 = rocket.Find ("RocketNew").Find ("C_down2").GetComponent<MeshRenderer>();
+		MeshRenderer left = rocket.Find ("RocketNew").Find ("C_left").GetComponent<MeshRenderer>();
+		MeshRenderer right = rocket.Find ("RocketNew").Find ("C_right").GetComponent<MeshRenderer>();
 
 
-		Material[] materials = new Material[]{ RocketColorManager.Instance.color1, RocketColorManager.Instance.color1 };
-		rightFootMat.materials = materials;
-		LeftFootMat.materials = materials;
-		//DownMat.materials = materials;
+		Material[] materials = new Material[]{ RocketColorManager.Instance.color1};
+		up1.materials = materials;
+		down2.materials = materials;
+		left.materials = materials;
+		right.materials = materials;
 
-//		float thresholdY = -8.5f;
-//		while (thresholdY > -7.1f) {
-//			thresholdY -= Time.deltaTime;
-//			rightFootMat.materials[1].SetFloat ("_ThresholdY", thresholdY);
-//			LeftFootMat.materials[1].SetFloat ("_ThresholdY", thresholdY);
-			yield return null;
-//		}
+		yield return null;
+
 	}
 
 }

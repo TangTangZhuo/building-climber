@@ -81,6 +81,7 @@ public class TurnTable : MonoBehaviour {
 
 	public void AddMultiText(){
 		multiText.text = "×" + (++treasureText);
+		print (treasureText);
 	}
 
 	//更新转盘元素
@@ -176,9 +177,8 @@ public class TurnTable : MonoBehaviour {
 				//第一次看广告不处理，第二次看广告退出转盘
 				if (isWatchAD) {
 					Invoke ("OnBackBtn", 0.5f);
-
 				}
-				isWatchAD = true;
+				//isWatchAD = true;
 
 			}else{
 				rotation.RotateLittle ();
