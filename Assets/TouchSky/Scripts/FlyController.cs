@@ -82,7 +82,9 @@ public class FlyController : MonoBehaviour {
 //				Destroy (gameObject);
 //			}
 			if (player.position.y - transform.position.y > 5 ||transform.position.y- player.position.y   > 60 ) {
-				Destroy (gameObject);					
+				if (transform.name != "airocket") {
+					Destroy (gameObject);
+				}				
 			}
 			yield return new WaitForSeconds (0.2f);
 		}

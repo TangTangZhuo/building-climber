@@ -20,6 +20,8 @@ public class AI_ThrowHook : MonoBehaviour {
 	[HideInInspector]
 	public GameObject curHook;
 
+	public GameObject reviveRocket;
+
 	[HideInInspector]
 	//瞄准圈内即将勾住的飞船
 	public GameObject curRocket;
@@ -81,8 +83,29 @@ public class AI_ThrowHook : MonoBehaviour {
 		rig2D = GetComponent<Rigidbody2D> ();
 
 		StartCoroutine ("PunchTrans");
+		StartCoroutine (UpdateDrop ());
 	}
 
+	IEnumerator UpdateDrop(){
+		
+		float time = 0;
+		while (true) {
+			if (rig2D.velocity.y < -8) {
+				time += Time.deltaTime;
+				if (time > 1f) {
+					GameObject go = Instantiate (reviveRocket, transform.position+Vector3.down*5, Quaternion.identity);
+					go.name = "airocket";
+					go.transform.Find("RocketCollider").gameObject.SetActive(true);
+					StartCoroutine (UpdateDrop ());
+					yield break;
+
+				}
+			} else {
+				time = 0;
+			}
+			yield return null;
+		}
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -174,6 +197,8 @@ public class AI_ThrowHook : MonoBehaviour {
 					float aiSpeed = 5;
 					if (PlayerPrefs.GetInt ("curLevel", 1) <= 5) {
 						aiSpeed = 5;
+					} else if (PlayerPrefs.GetInt ("curLevel", 1) <= 20) {
+						aiSpeed = 10;
 					} else {
 						aiSpeed = 15;
 					}

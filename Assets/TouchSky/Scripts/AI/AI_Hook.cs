@@ -50,6 +50,10 @@ public class AI_Hook : MonoBehaviour {
 				StartCoroutine (ai_ThrowHook.ChangeRocketColor (target));
 
 				target.Find ("sprinting").gameObject.SetActive (true);
+				BoxCollider2D b2D = target.Find ("sprinting").GetComponent<BoxCollider2D> ();
+				if (b2D) {
+					target.Find ("sprinting").GetComponent<BoxCollider2D> ().enabled = false;
+				}
 				coll.GetComponent<PolygonCollider2D> ().enabled = false;
 				StartCoroutine (ResetRocket (target, coll, 1));
 				//target.transform.DOPunchPosition (transform.position-target.position, 0.5f, 1, 1, false);

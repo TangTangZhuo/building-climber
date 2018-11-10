@@ -119,7 +119,7 @@ public class PlayerCollider : MonoBehaviour {
 		while (true) {
 			if (rig2D.velocity.y < -8) {
 				time += Time.deltaTime;
-				if (time > 2f) {
+				if (time > 1f) {
 					Instantiate (ParticleManager.Instance.particle_playerDead, transform.position, transform.rotation);
 					Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 					if (!isWin) {
@@ -162,10 +162,9 @@ public class PlayerCollider : MonoBehaviour {
 
 		transform.GetComponent<CircleCollider2D> ().enabled = false;
 		//turnTable.SetActive(true);
-//		if (throwHook.hookTarget) {
-//			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
-//
-//		}
+		if (throwHook.hookTarget) {
+			throwHook.hookTarget.Find ("RocketCollider").GetComponentInChildren<PolygonCollider2D> ().enabled = false;
+		}
 
 		PlayerPrefs.SetInt ("curLevel", PlayerPrefs.GetInt ("curLevel", 1)+1);
 	}

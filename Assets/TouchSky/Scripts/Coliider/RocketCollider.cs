@@ -34,15 +34,19 @@ public class RocketCollider : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D coll){
 	//	print (ai_throwHook);
 		//if (throwHook.hookTarget == transform.parent.parent) {
-			if (transform.tag == "curRocket") {
-				if (throwHook.gameState == GameState.isHooking) {
+		if (coll.tag == "Terminal") {
+			transform.GetComponent<PolygonCollider2D> ().enabled = false;
+		}
+
+		if (transform.tag == "curRocket") {
+			if (throwHook.gameState == GameState.isHooking) {
 				if (coll.tag == "deadline" || coll.tag == "deadcloud" || coll.tag == "rocket") {
 					Instantiate (ParticleManager.Instance.particle_rocketDead, transform.position, transform.rotation);
 					transform.parent.parent.GetComponent<SpriteRenderer> ().enabled = false;
 					if (throwHook.hookTarget == transform.parent.parent) {
 						Camera.main.transform.DOShakePosition (0.4f, 1, 10, 90, false, true);
 						//Invoke ("GameOverPre", 0.4f);
-						throwHook.GetComponent<PlayerCollider>().GameOverPre();
+						throwHook.GetComponent<PlayerCollider> ().GameOverPre ();
 						Destroy (transform.parent.parent.gameObject);
 					}
 
@@ -55,14 +59,12 @@ public class RocketCollider : MonoBehaviour {
 						GameObject.Find ("FlyTreasureRun").GetComponent<FlyGold> ().FlyGoldGenerate (1);
 					}
 				}
-				if (coll.tag == "Terminal") {
-					transform.GetComponent<PolygonCollider2D> ().enabled = false;
-				}
+
 
 				
 				
-				}
 			}
+		}
 
 		//AI碰撞
 		if (transform.tag == "curRocket") {
